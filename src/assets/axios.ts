@@ -1,5 +1,5 @@
 import axios from 'axios'
-import constants from '../constants/constants'
+import constants from './constants/constants'
 import { pinia, useRootStore } from '../stores/store'
 import router from '../router'
 

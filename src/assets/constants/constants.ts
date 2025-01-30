@@ -9,8 +9,8 @@ const constants = {
     : import.meta.env.VITE_DOCKER
       ? 'http://localhost:9009/v1/'
       : 'http://localhost:9000/v1/',
-  DEFAULT_TEAM_URL: 'assets/images/escudo-vacio.png',
-  DEFAULT_PLAYER_URL: 'assets/images/person_icon.png',
+  DEFAULT_TEAM_URL: 'assets/default-images/escudo-vacio.png',
+  DEFAULT_PLAYER_URL: 'assets/default-images/person_icon.png',
   years: [
     '1980',
     '1981',

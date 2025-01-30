@@ -40,7 +40,7 @@
 <script>
 import { computed, onMounted } from 'vue'
 import { useUserStore, useCompetitionStore } from '@/stores/store.ts'
-import constants from '@/assets/constants/constants'
+import constants from '@/assets/constants/constants.ts'
 export default {
   name: 'CompetitionCarousel',
   props: {
@@ -66,6 +66,7 @@ export default {
 
     onMounted(() => {
       // getInitialData()
+      console.log(constants)
     })
 
     return {

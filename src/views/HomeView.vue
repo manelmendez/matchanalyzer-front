@@ -7,7 +7,7 @@
       <TeamCarousel></TeamCarousel>
     </template>
   </Card>
-  <Card style="margin-top: 1em;">
+  <Card>
     <template #title>
       Competiciones <Badge :value="competitions.length" size="small" style="margin-left: 0.5em;" />
     </template>

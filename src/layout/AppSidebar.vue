@@ -17,15 +17,12 @@ const items = ref([
 
 <style>
 .p-menu.sidebar-menu {
-  position: fixed;
-  z-index: 997;
-  left: 2em;
-  top: 6em;
   border: none;
   height: calc(100vh - 8rem);
   overflow-y: auto;
-  padding: .5rem 1rem;
+  padding: .5rem .5rem;
   border-radius: 0.75em;
+  width: max-content;
 }
 
 .p-menu.sidebar-menu ul a {

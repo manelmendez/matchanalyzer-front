@@ -1,14 +1,6 @@
 @import './base.css';
 @import 'primeicons/primeicons.css';
 
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
-}
-
 html {
   min-height:100%;
   height:100%;
@@ -17,14 +9,25 @@ html {
 body {
   min-height: 100%;
   height:100%; 
+  margin: 0;
+  padding: 0;
+}
+
+#app {
+  margin: 0 auto;
+  padding: 6em 2em 2em 2em;
+  font-weight: normal;
+  display: flex;
+  flex-direction: row;
+  gap: 2em;
 }
 
 main {
-  display: inline-block;
   min-height: 100%;
   height: 100%;
-  max-width: 100%;
-  padding: 3rem 0 0 15rem;  
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
 }
 
 .center-h {
