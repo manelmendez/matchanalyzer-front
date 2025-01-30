@@ -14,6 +14,7 @@ body {
 }
 
 #app {
+  position: fixed;
   margin: 0 auto;
   padding: 6em 2em 2em 2em;
   font-weight: normal;
