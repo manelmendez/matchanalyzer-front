@@ -138,7 +138,7 @@ export const teamActions = {
         throw err.response
       })
   },
-  getPlayersByTeamId(teamId) {
+  getPlayersByTeamId(teamId:number) {
     console.log('ACTION -- getPlayersByTeamId')
     const teamStore = useTeamStore()
     return axios

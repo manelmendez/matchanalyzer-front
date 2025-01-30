@@ -1,7 +1,7 @@
 <template>
   <Card>
     <template #title>
-      Equipos <Badge :value="myTeams.length" style="margin-left: 0.5em;" />
+      Equipos <Badge :value="myTeams.length" size="small" style="margin-left: 0.5em;" />
     </template>
     <template #content>
       <TeamCarousel></TeamCarousel>
@@ -9,7 +9,7 @@
   </Card>
   <Card style="margin-top: 1em;">
     <template #title>
-      Competiciones <Badge :value="competitions.length" style="margin-left: 0.5em;" />
+      Competiciones <Badge :value="competitions.length" size="small" style="margin-left: 0.5em;" />
     </template>
     <template #content>
       <CompetitionCarousel></CompetitionCarousel>

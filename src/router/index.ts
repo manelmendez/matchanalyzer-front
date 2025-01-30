@@ -19,7 +19,31 @@ const router = createRouter({
               name: 'dashboard',
               component: () => import('@/views/HomeView.vue'),
               meta: { requiresAuth: true }
+          },
+          {
+            path: '/teams',
+            name: 'teams',
+            component: () => import('@/views/teams/MyTeams.vue'),
+            meta: { requiresAuth: true },
+          },
+          {
+            path: '/teams/:id',
+            name: 'teams-id',
+            component: () => import('@/views/teams/_id/_id.vue'),
+            meta: { requiresAuth: true }
           }
+          // {
+          //   path: '/competitions',
+          //   name: 'competitions',
+          //   component: () => import('@/views/Competitions.vue'),
+          //   meta: { requiresAuth: true }
+          // },
+          // {
+          //   path: '/teams',
+          //   name: 'teams',
+          //   component: () => import('@/views/Teams.vue'),
+          //   meta: { requiresAuth: true }
+          // },
         ]
     },
     {
