@@ -1,25 +1,14 @@
-import { rootMutations } from '../mutations/rootMutations'
+import { defineStore } from 'pinia'
+// import { rootMutations } from '../mutations/rootMutations.ts'
 
-export const rootModule = {
-  namespaced: true,
-  state: {
-    snackbar: {
-      show: false,
-      color: '',
-      text: ''
-    },
+export const useRootStore = defineStore('root', {
+  state: () => ({
+    toast: { severity: 'success', summary: 'Logueado correctamente', life: 3000 },
     theme: window.localStorage.getItem('theme')
-  },
+  }),
   getters: {
-    snackbar: (state) => {
-      return state.snackbar
-    },
-    theme: (state) => {
-      return state.theme
-    }
   },
-  mutations: {
-    ...rootMutations
-  },
-  actions: {}
-}
+  actions: {
+    // ...rootMutations
+  }
+})

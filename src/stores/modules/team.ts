@@ -1,33 +1,24 @@
-import { teamMutations } from '../mutations/teamMutations'
-import * as teamActions from '../actions/teamActions'
+import { defineStore } from 'pinia'
+import {teamActions} from '../actions/teamActions'
+import { ITeam } from '@/models/team'
+import { IPlayer } from '@/models/player'
 
-export const teamModule = {
-  namespaced: true,
-  state: {
-    teams: [],
-    myTeams: [],
-    players: [],
+export const useTeamStore = defineStore('team', {
+  state: () => ({
+    teams: [] as ITeam[],
+    myTeams: [] as ITeam[],
+    players: [] as IPlayer[],
     pichichiList: [],
     cardList: []
-  },
+  }),
   getters: {
-    teams: (state) => {
-      return state.teams
+    teamPlayers: (state) => (id: number) => {
+      let team: ITeam | undefined = state.teams.find((team) => team.id == id)
+      return team ? team?.players : undefined
     },
-    myTeams: (state) => {
-      return state.myTeams
-    },
-    teamPlayers: (state) => (id) => {
-      let team = state.teams.find((team) => team.id == id)
-      return team.players
-    },
-    teamById: (state) => (id) => {
-      return state.teams.find((team) => team.id == id)
-    },
-    myTeamById: (state) => (id) => {
-      return state.myTeams.find((team) => team.id == id)
-    },
-    playersByTeamId: (state) => (teamId) => {
+    teamById: (state) => (id:number) => state.teams.find((team) => team.id == id),
+    myTeamById: (state) => (id:number) => state.myTeams.find((team) => team.id == id),
+    playersByTeamId: (state) => (teamId:number) => {
       let playersByTeamId = state.players.filter(
         (player) => player.teamId == teamId
       )
@@ -35,18 +26,9 @@ export const teamModule = {
         player.name = player.firstname + ' ' + player.lastname
       }
       return playersByTeamId
-    },
-    pichichiList: (state) => {
-      return state.pichichiList
-    },
-    cardList: (state) => {
-      return state.cardList
     }
   },
-  mutations: {
-    ...teamMutations
-  },
   actions: {
-    ...teamActions
+    ...teamActions,
   }
-}
+})

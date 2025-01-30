@@ -1,93 +1,87 @@
-import { competitionMutations } from '../mutations/competitionMutations.js'
-import * as competitionActions from '../actions/competitionActions.js'
+import { defineStore } from 'pinia'
+import {competitionActions} from '../actions/competitionActions'
+import { ICompetition } from '@/models/competition'
+import { Card } from '@/models/card'
+import { Round } from '@/models/round'
+import { Goal } from '@/models/goal'
+import { Match } from '@/models/match'
+import { MatchPart } from '@/models/matchpart'
+import { Minute } from '@/models/minute'
+import { Assist } from '@/models/assist'
+import { Substitution } from '@/models/substitution'
+import { ITeam } from "@/models/team"
 
-export const competitionModule = {
-  namespaced: true,
-  state: {
-    competitions: [],
-    competition: {
-      teams: []
-    },
-    rounds: [],
-    match: null,
-    matchparts: [],
-    minutes: [],
-    goals: [],
-    assists: [],
-    cards: [],
-    substitutions: []
-  },
+export const useCompetitionStore = defineStore('competition', {
+  state: () => ({
+    competitions: [] as ICompetition[],
+    competition: {} as ICompetition,
+    rounds: [] as Round[],
+    match: {} as Match,
+    matchparts: [] as MatchPart[],
+    minutes: [] as Minute[],
+    goals: [] as Goal[],
+    assists: [] as Assist[],
+    cards: [] as Card[],
+    substitutions: [] as Substitution[]
+  }),
   getters: {
-    competitions: (state) => {
-      return state.competitions
-    },
     competition: (state) => {
-      state.competitions.rounds = state.rounds
+      state.competition.rounds = state.rounds
       return state.competition
     },
-    competitionTeams: (state) => {
-      return state.competition.teams.sort((a, b) =>
-        a.name.localeCompare(b.name)
-      )
-    },
-    rounds: (state) => {
-      return state.rounds
-    },
-    round: (state) => (selectedRound) => {
-      if (selectedRound == 'latest') {
+    competitionTeams: (state) => state.competition.teams ? state.competition.teams.sort((a, b) => a.name.localeCompare(b.name)) : [],
+    round: (state) => (selectedRound: any) => {
+      if (selectedRound === 'latest') {
         return state.rounds[state.rounds.length - 1]
       } else {
         return state.rounds[selectedRound - 1]
       }
     },
-    match: (state) => {
-      return state.match
-    },
-    matchpartsByMatch: (state) => (matchId) => {
+    matchpartsByMatch: (state) => (matchId:number) => {
       if (state.matchparts) {
         return state.matchparts.filter(
           (matchpart) => matchpart.matchId == matchId
         )
       }
     },
-    minutesByMatch: (state) => (matchId) => {
+    minutesByMatch: (state) => (matchId:number) => {
       return state.minutes.filter((minute) => minute.matchId == matchId)
     },
-    goalsByMatch: (state) => (matchId) => {
+    goalsByMatch: (state) => (matchId:number) => {
       return state.goals.filter((goal) => goal.matchId == matchId)
     },
-    assistsByMatch: (state) => (matchId) => {
+    assistsByMatch: (state) => (matchId:number) => {
       return state.assists.filter((assist) => assist.matchId == matchId)
     },
-    cardsByMatch: (state) => (matchId) => {
+    cardsByMatch: (state) => (matchId:number) => {
       return state.cards.filter((card) => card.matchId == matchId)
     },
-    substitutionsByMatch: (state) => (matchId) => {
+    substitutionsByMatch: (state) => (matchId:number) => {
       return state.substitutions.filter(
         (substitution) => substitution.matchId == matchId
       )
     },
-    minutesByMatchpart: (state) => (matchpartId) => {
-      return state.minutes.filter((minute) => minute.matchpart == matchpartId)
+    minutesByMatchpart: (state) => (matchpartId:number) => {
+      return state.minutes.filter((minute) => minute.matchpartId == matchpartId)
     },
-    goalsByMatchpart: (state) => (matchpartId) => {
-      return state.goals.filter((goal) => goal.matchpart == matchpartId)
+    goalsByMatchpart: (state) => (matchpartId:number) => {
+      return state.goals.filter((goal) => goal.matchpartId == matchpartId)
     },
-    assistsByMatchpart: (state) => (matchpartId) => {
-      return state.assists.filter((assist) => assist.matchpart == matchpartId)
+    assistsByMatchpart: (state) => (matchpartId:number) => {
+      return state.assists.filter((assist) => assist.matchpartId == matchpartId)
     },
-    cardsByMatchpart: (state) => (matchpartId) => {
-      return state.cards.filter((card) => card.matchpart == matchpartId)
+    cardsByMatchpart: (state) => (matchpartId:number) => {
+      return state.cards.filter((card) => card.matchpartId == matchpartId)
     },
-    substitutionsByMatchpart: (state) => (matchpartId) => {
+    substitutionsByMatchpart: (state) => (matchpartId: number) => {
       return state.substitutions.filter(
-        (substitution) => substitution.matchpart == matchpartId
+        (substitution) => substitution.matchpartId == matchpartId
       )
     },
-    teamById: (state) => (teamId) => {
-      return state.competition.teams.find((team) => team.id == teamId)
+    teamById: (state) => (teamId:number) => {
+      return state.competition.teams ? state.competition.teams.find((team) => team.id == teamId) : undefined
     },
-    matches: (state) => (selectedRound) => {
+    matches: (state) => (selectedRound: any) => {
       const selRound =
         selectedRound == 'latest' ? state.rounds.length - 1 : selectedRound - 1
       if (state.rounds && state.rounds.length != 0) {
@@ -96,14 +90,13 @@ export const competitionModule = {
         return []
       }
     },
-    matchById: (state) => (id, selectedRound) => {
+    matchById: (state) => (id:number, selectedRound: any) => {
       if (state.rounds && state.rounds.length != 0) {
-        return state.rounds[
-          selectedRound != null ? selectedRound - 1 : state.rounds.length - 1
-        ].matches.find((match) => match.id == id)
+        const round = state.rounds[selectedRound != null ? selectedRound - 1 : state.rounds.length - 1];
+        return round && round.matches ? round.matches.find((match: Match) => match.id == id) : undefined;
       }
     },
-    roundTeams: (state) => (selectedRound) => {
+    roundTeams: (state) => (selectedRound:any) => {
       if (state.rounds && state.rounds.length != 0) {
         let actualCompetition = { ...state.competition }
         selectedRound =
@@ -111,16 +104,16 @@ export const competitionModule = {
         let actualRound = {
           ...state.rounds[selectedRound - 1]
         }
-        let actualRoundTeams = [...actualCompetition.teams]
-        for (let i = 0; i < actualCompetition.teams.length; i++) {
+        let actualRoundTeams: ITeam[] = actualCompetition.teams ? [...actualCompetition.teams] : []
+        for (let i = 0; actualCompetition.teams && i < actualCompetition.teams.length; i++) {
           let found = false
           let j = 0
-          while (j < actualRound.matches.length && !found) {
+          while (actualRound.matches && j < actualRound.matches.length && !found) {
             if (
               actualCompetition.teams[i].id ==
-                actualRound.matches[j].localTeam.id ||
+              actualRound.matches[j].localTeam.id ||
               actualCompetition.teams[i].id ==
-                actualRound.matches[j].awayTeam.id
+              actualRound.matches[j].awayTeam.id
             ) {
               found = true
               let index = actualRoundTeams
@@ -136,7 +129,7 @@ export const competitionModule = {
         return actualRoundTeams
       }
     },
-    rankedTeams: (state) => (selectedRound) => {
+    rankedTeams: (state) => (selectedRound: any) => {
       if (state.competition.teams && state.rounds && state.rounds.length != 0) {
         let teams = [...state.competition.teams]
         let updatedTeams = []
@@ -175,7 +168,7 @@ export const competitionModule = {
             let matches = state.rounds[j].matches
             let x = 0
             let found = false
-            while (x < matches.length && !found) {
+            while (matches && x < matches.length && !found) {
               if (matches[x].localTeam.id == teams[i].id) {
                 teamStats.gamesPlayed += 1
                 teamStats.homeGamesPlayed += 1
@@ -262,15 +255,15 @@ export const competitionModule = {
           updatedTeams.push(updatedTeam)
         }
         // esto ordena primero por puntos y luego por diferencia de goles
-        return updatedTeams.sort(function (b, a) {
+        return updatedTeams.sort(function (b:ITeam, a:ITeam) {
           //si los puntos de los dos equipos son distintos
-          if (a.stats.points !== b.stats.points) {
+          if (a.stats && b.stats && a.stats.points !== b.stats.points) {
             //devuelve positivo (+) o negativo (-) según quien tenga más
             return a.stats.points - b.stats.points
           }
           //si los puntos son iguales pasa a hacer lo siguiente:
-          else if (a.stats.points == b.stats.points) {
-            let matches = []
+          else if (a.stats && b.stats && a.stats.points == b.stats.points) {
+            let matches: Match[] = []
             //coger todos los partidos
             for (let x = 0; x < actualRound; x++) {
               matches = [...matches, ...state.rounds[x].matches]
@@ -310,7 +303,7 @@ export const competitionModule = {
               if (
                 duelMatches[z].localTeam.id == a.id &&
                 Number(duelMatches[z].localTeamGoals) >
-                  Number(duelMatches[z].awayTeamGoals)
+                Number(duelMatches[z].awayTeamGoals)
               ) {
                 aWin++
                 goalDifference +=
@@ -319,7 +312,7 @@ export const competitionModule = {
               } else if (
                 duelMatches[z].awayTeam.id == a.id &&
                 Number(duelMatches[z].awayTeamGoals) >
-                  Number(duelMatches[z].localTeamGoals)
+                Number(duelMatches[z].localTeamGoals)
               ) {
                 aWin++
                 goalDifference +=
@@ -328,19 +321,19 @@ export const competitionModule = {
               } else if (
                 duelMatches[z].localTeam.id == a.id &&
                 Number(duelMatches[z].localTeamGoals) ==
-                  Number(duelMatches[z].awayTeamGoals)
+                Number(duelMatches[z].awayTeamGoals)
               ) {
                 aDraw++
               } else if (
                 duelMatches[z].awayTeam.id == a.id &&
                 Number(duelMatches[z].awayTeamGoals) ==
-                  Number(duelMatches[z].localTeamGoals)
+                Number(duelMatches[z].localTeamGoals)
               ) {
                 aDraw++
               } else if (
                 duelMatches[z].localTeam.id == a.id &&
                 Number(duelMatches[z].localTeamGoals) <
-                  Number(duelMatches[z].awayTeamGoals)
+                Number(duelMatches[z].awayTeamGoals)
               ) {
                 aLose++
                 goalDifference +=
@@ -349,7 +342,7 @@ export const competitionModule = {
               } else if (
                 duelMatches[z].awayTeam.id == a.id &&
                 Number(duelMatches[z].awayTeamGoals) <
-                  Number(duelMatches[z].localTeamGoals)
+                Number(duelMatches[z].localTeamGoals)
               ) {
                 aLose++
                 goalDifference +=
@@ -430,7 +423,21 @@ export const competitionModule = {
         return []
       }
     },
-    topScorers: (state, getters) => (selectedRound) => {
+    topScorers: (state: any, getters: any) => (selectedRound: any): ITeam[] => {
+      selectedRound =
+      selectedRound == 'latest' ? state.rounds.length - 1 : selectedRound
+      let orderTeams: ITeam[] = JSON.parse(
+      JSON.stringify(getters.rankedTeams(selectedRound))
+      )
+      return JSON.parse(
+      JSON.stringify(
+        orderTeams.sort(function (b: ITeam, a: ITeam) {
+        return (a.stats?.goals ?? 0) - (b.stats?.goals ?? 0)
+        })
+      )
+      )
+    },
+    mostTrashed: (state: any, getters: any) => (selectedRound: any): ITeam[] => {
       selectedRound =
         selectedRound == 'latest' ? state.rounds.length - 1 : selectedRound
       let orderTeams = JSON.parse(
@@ -438,41 +445,27 @@ export const competitionModule = {
       )
       return JSON.parse(
         JSON.stringify(
-          orderTeams.sort(function (b, a) {
-            return a.stats.goals - b.stats.goals
+          orderTeams.sort(function (b:ITeam, a:ITeam) {
+            return (b.stats?.againstGoals ?? 0) - (a.stats?.againstGoals ?? 0)
           })
         )
       )
     },
-    mostTrashed: (state, getters) => (selectedRound) => {
+    topDifference: (state: any, getters: any) => (selectedRound: any): ITeam[] => {
       selectedRound =
-        selectedRound == 'latest' ? state.rounds.length - 1 : selectedRound
-      let orderTeams = JSON.parse(
-        JSON.stringify(getters.rankedTeams(selectedRound))
+      selectedRound == 'latest' ? state.rounds.length - 1 : selectedRound
+      let orderTeams: ITeam[] = JSON.parse(
+      JSON.stringify(getters.rankedTeams(selectedRound))
       )
       return JSON.parse(
-        JSON.stringify(
-          orderTeams.sort(function (b, a) {
-            return b.stats.againstGoals - a.stats.againstGoals
-          })
-        )
+      JSON.stringify(
+        orderTeams.sort(function (b: ITeam, a: ITeam) {
+        return (a.stats?.goalDif ?? 0) - (b.stats?.goalDif ?? 0)
+        })
+      )
       )
     },
-    topDifference: (state, getters) => (selectedRound) => {
-      selectedRound =
-        selectedRound == 'latest' ? state.rounds.length - 1 : selectedRound
-      let orderTeams = JSON.parse(
-        JSON.stringify(getters.rankedTeams(selectedRound))
-      )
-      return JSON.parse(
-        JSON.stringify(
-          orderTeams.sort(function (b, a) {
-            return a.stats.goalDif - b.stats.goalDif
-          })
-        )
-      )
-    },
-    statsPerRound: (state) => {
+    statsPerRound: (state: any): any[] => {
       if (state.competition.teams && state.rounds && state.rounds.length != 0) {
         let teams = [...state.competition.teams]
         let roundRankings = []
@@ -595,7 +588,7 @@ export const competitionModule = {
             }
             //si los puntos son iguales pasa a hacer lo siguiente:
             else if (a.stats.points == b.stats.points) {
-              let matches = []
+              let matches: Match[] = []
               //coger todos los partidos
               for (let x = 0; x < state.rounds.length; x++) {
                 matches = [...matches, ...state.rounds[x].matches]
@@ -604,10 +597,12 @@ export const competitionModule = {
               //buscar los partidos que esos 2 equipos hayan jugado entre ellos
               for (let y = 0; y < matches.length; y++) {
                 if (
-                  (matches[y].localTeam.id === a.id &&
-                    matches[y].awayTeam.id === b.id) ||
-                  (matches[y].localTeam.id === b.id &&
-                    matches[y].awayTeam.id === a.id)
+                  (matches[y] && matches[y].localTeam && matches[y].awayTeam &&
+                    matches[y].localTeam?.id === a.id &&
+                    matches[y].awayTeam?.id === b.id) ||
+                  (matches[y] && matches[y].localTeam && matches[y].awayTeam &&
+                    matches[y].localTeam?.id === b.id &&
+                    matches[y].awayTeam?.id === a.id)
                 ) {
                   duelMatches.push(matches[y])
                 }
@@ -619,48 +614,48 @@ export const competitionModule = {
               let goalDifference = 0
               for (let z = 0; z < duelMatches.length; z++) {
                 if (
-                  duelMatches[z].localTeam.id == a.id &&
+                  duelMatches[z].localTeam?.id == a.id &&
                   Number(duelMatches[z].localTeamGoals) >
-                    Number(duelMatches[z].awayTeamGoals)
+                  Number(duelMatches[z].awayTeamGoals)
                 ) {
                   aWin++
                   goalDifference +=
                     Number(duelMatches[z].localTeamGoals) -
                     Number(duelMatches[z].awayTeamGoals)
                 } else if (
-                  duelMatches[z].awayTeam.id == a.id &&
+                  duelMatches[z].awayTeam?.id == a.id &&
                   Number(duelMatches[z].awayTeamGoals) >
-                    Number(duelMatches[z].localTeamGoals)
+                  Number(duelMatches[z].localTeamGoals)
                 ) {
                   aWin++
                   goalDifference +=
                     Number(duelMatches[z].awayTeamGoals) -
                     Number(duelMatches[z].localTeamGoals)
                 } else if (
-                  duelMatches[z].localTeam.id == a.id &&
+                  duelMatches[z].localTeam?.id == a.id &&
                   Number(duelMatches[z].localTeamGoals) ==
-                    Number(duelMatches[z].awayTeamGoals)
+                  Number(duelMatches[z].awayTeamGoals)
                 ) {
                   aDraw++
                 } else if (
-                  duelMatches[z].awayTeam.id == a.id &&
+                  duelMatches[z].awayTeam?.id == a.id &&
                   Number(duelMatches[z].awayTeamGoals) ==
-                    Number(duelMatches[z].localTeamGoals)
+                  Number(duelMatches[z].localTeamGoals)
                 ) {
                   aDraw++
                 } else if (
-                  duelMatches[z].localTeam.id == a.id &&
+                  duelMatches[z].localTeam?.id == a.id &&
                   Number(duelMatches[z].localTeamGoals) <
-                    Number(duelMatches[z].awayTeamGoals)
+                  Number(duelMatches[z].awayTeamGoals)
                 ) {
                   aLose++
                   goalDifference +=
                     Number(duelMatches[z].localTeamGoals) -
                     Number(duelMatches[z].awayTeamGoals)
                 } else if (
-                  duelMatches[z].awayTeam.id == a.id &&
+                  duelMatches[z].awayTeam?.id == a.id &&
                   Number(duelMatches[z].awayTeamGoals) <
-                    Number(duelMatches[z].localTeamGoals)
+                  Number(duelMatches[z].localTeamGoals)
                 ) {
                   aLose++
                   goalDifference +=
@@ -716,15 +711,15 @@ export const competitionModule = {
         return []
       }
     },
-    teamMatchesPerRound: (state) => (id) => {
+    teamMatchesPerRound: (state) => (id: number) => {
       if (state.competition.teams && state.rounds && state.rounds.length != 0) {
         let teamMatchesPerRound = []
         for (let r = 0; r < state.rounds.length; r++) {
           let found = false
           let m = 0
-          while (m < state.rounds[r].matches.length && !found) {
-            let match = state.rounds[r].matches[m]
-            if (match.localTeam.id == id || match.awayTeam.id == id) {
+          while (state.rounds[r].matches != null && m < state.rounds[r].matches.length && !found) {
+            let match: Match = state.rounds[r].matches[m]
+            if (match.localTeam?.id == id || match.awayTeam?.id == id) {
               teamMatchesPerRound.push(match)
               found = true
             }
@@ -736,7 +731,7 @@ export const competitionModule = {
         return []
       }
     },
-    teamsNotPlayedThisRound: (state, getters) => (selectedRound) => {
+    teamsNotPlayedThisRound: (state:any, getters:any) => (selectedRound:any) => {
       if (state.competition.teams && state.rounds && state.rounds.length != 0) {
         let teamsPlayed = []
         for (const match of getters.round(selectedRound).matches) {
@@ -744,7 +739,7 @@ export const competitionModule = {
           teamsPlayed.push(match.awayTeam)
         }
         let teamsNotPlayed = state.competition.teams.filter(
-          (a) => !teamsPlayed.some((b) => a.id == b.id)
+          (a:ITeam) => !teamsPlayed.some((b) => a.id == b.id)
         )
         return teamsNotPlayed
       } else {
@@ -752,10 +747,7 @@ export const competitionModule = {
       }
     }
   },
-  mutations: {
-    ...competitionMutations
-  },
   actions: {
-    ...competitionActions
+    ...competitionActions,
   }
-}
+})

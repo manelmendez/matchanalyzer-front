@@ -7,21 +7,27 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    Avatar: typeof import('primevue/avatar')['default']
     Badge: typeof import('primevue/badge')['default']
     Button: typeof import('primevue/button')['default']
-    Drawer: typeof import('primevue/drawer')['default']
+    Card: typeof import('primevue/card')['default']
+    Carousel: typeof import('primevue/carousel')['default']
+    Chart: typeof import('primevue/chart')['default']
+    Chip: typeof import('primevue/chip')['default']
+    CompetitionCarousel: typeof import('./src/components/dashboard/CompetitionCarousel.vue')['default']
+    Fieldset: typeof import('primevue/fieldset')['default']
+    Form: typeof import('@primevue/forms/form')['default']
+    FormField: typeof import('@primevue/forms/formfield')['default']
     IconField: typeof import('primevue/iconfield')['default']
     InputIcon: typeof import('primevue/inputicon')['default']
     InputText: typeof import('primevue/inputtext')['default']
     Menu: typeof import('primevue/menu')['default']
+    Message: typeof import('primevue/message')['default']
+    Password: typeof import('primevue/password')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    SplitButton: typeof import('primevue/splitbutton')['default']
+    Tag: typeof import('primevue/tag')['default']
+    TeamCarousel: typeof import('./src/components/dashboard/TeamCarousel.vue')['default']
+    Toast: typeof import('primevue/toast')['default']
     Toolbar: typeof import('primevue/toolbar')['default']
-  }
-  export interface ComponentCustomProperties {
-    Ripple: typeof import('primevue/ripple')['default']
-    StyleClass: typeof import('primevue/styleclass')['default']
   }
 }

@@ -1,7 +1,6 @@
 import './assets/main.css'
 
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config'
 import Aura from '@primevue/themes/aura'
 
@@ -10,6 +9,8 @@ import ToastService from 'primevue/toastservice'
 
 import App from './App.vue'
 import router from './router'
+import { pinia, useUserStore } from './stores/store'
+import * as axiosConfig from './assets/axios'
 
 const app = createApp(App)
 
@@ -25,8 +26,10 @@ app.use(PrimeVue, {
     },
   },
 })
-
-app.use(createPinia())
+app.use(pinia)
+app.config.globalProperties.$axios = axiosConfig
+const userStore = useUserStore()
+userStore.initializeStore()
 app.use(router)
 app.use(ToastService)
 app.use(ConfirmationService)
