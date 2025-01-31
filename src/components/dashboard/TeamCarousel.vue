@@ -5,16 +5,18 @@
       <div class="carousel-content" v-if="slotProps.data.stats">
         <div class="carousel-item">
           <h3>Posición en liga</h3>
-          <p>{{ slotProps.data.stats.position }}</p>
-          <i v-if="slotProps.data.stats.position <= 3" class="pi pi-trophy"
-          :style="
-                slotProps.data.stats.position == 1
-                  ? 'color:gold;'
-                  : slotProps.data.stats.position == 2
-                    ? 'color:silver;'
-                    : slotProps.data.stats.position == 3
-                      ? 'color:orange;'
-                      : '' " ></i>
+          <div>
+            <p class="center-h">{{ slotProps.data.stats.position }}</p>
+            <i v-if="slotProps.data.stats.position <= 3" class="pi pi-trophy center-h"
+            :style="
+                  slotProps.data.stats.position == 1
+                    ? 'color:gold;'
+                    : slotProps.data.stats.position == 2
+                      ? 'color:silver;'
+                      : slotProps.data.stats.position == 3
+                        ? 'color:orange;'
+                        : '' " ></i>
+          </div>
         </div>
         <div class="carousel-item">
           <h3>Puntos</h3>
@@ -33,7 +35,9 @@
         </div>
         <div class="carousel-item">
           <h3>Resumen Partidos</h3>
-          <Chart type="doughnut" :data="setChartData(slotProps.data)" :options="setChartOptions()" class="w-full md:w-[30rem]" />
+          <div class="chart-container">
+            <Chart type="doughnut" :data="setChartData(slotProps.data)" :options="setChartOptions()" class="" />
+          </div>
         </div>
       </div>
       <div class="carousel-item-empty" v-else>
@@ -87,8 +91,7 @@ export default {
 
     const setChartOptions = () => {
       return {
-        aspectRatio: 3.5,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
         responsive: true,
         plugins: {
           legend: {
@@ -112,13 +115,22 @@ export default {
 <style>
 .carousel-content {
   display: grid;
-  grid-auto-flow: column;
   grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 1600px) {
+  .carousel-content {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 1280px) {
+  .carousel-content {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }
 
 .carousel-item {
   display: grid;
-  grid-auto-flow: row;
   justify-items: center;
   grid-template-rows: min-content;
 }
@@ -129,5 +141,15 @@ export default {
   justify-items: center;
   align-items: center;
   height: 100%;
+}
+
+.carousel-item .chart-container {
+  width: 50%; /* Asegura que el contenedor del gráfico ocupe todo el ancho */
+  height: auto;
+}
+
+.carousel-item .chart-container canvas {
+  width: 100% !important; /* El canvas ocupa el 100% del contenedor */
+  height: auto !important; /* Mantiene la relación de aspecto */
 }
 </style>

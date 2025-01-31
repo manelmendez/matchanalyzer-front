@@ -82,12 +82,22 @@ export default {
 <style>
 .carousel-content {
   display: grid;
-  grid-auto-flow: column;
   grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 1600px) {
+  .carousel-content {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 1280px) {
+  .carousel-content {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }
 .carousel-item {
   display: grid;
-  grid-auto-flow: row;
   justify-items: center;
   grid-template-rows: min-content;
 }

@@ -14,20 +14,19 @@ body {
 }
 
 #app {
-  position: fixed;
   margin: 0 auto;
   padding: 6em 2em 2em 2em;
   font-weight: normal;
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 14em 1fr;
   gap: 2em;
 }
 
 main {
   min-height: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-auto-flow: row;
   gap: 2em;
 }
 
