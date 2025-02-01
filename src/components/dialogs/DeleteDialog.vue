@@ -1,5 +1,5 @@
 <template>
-  <ConfirmDialog></ConfirmDialog>
+  <ConfirmDialog :closable="false"></ConfirmDialog>
 </template>
 
 <script>
@@ -74,7 +74,7 @@ export default {
         onHide: () => {
           emit('close')
         }
-    });
+      });
     })
     return {
       confirm

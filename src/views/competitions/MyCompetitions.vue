@@ -1,16 +1,13 @@
 <template>
   <div>
-    <Menu :model="myTeams" class="teams-menu">
+    <Menu :model="myCompetitions" class="competition-menu">
       <template #item="{ item }">
-        <div class="item" @click="router.push({name: 'teams-id', params: {id: item.id}})">
+        <div class="item" @click="router.push({name: 'competitions-id', params: {id: item.id}})">
           <a v-ripple class="flex items-center">
-            <!-- <span :class="item.icon" /> -->
-            <Image style="margin-right: 1em;" :src="constants.ADDRESS + item.avatar"
-              @error="item.avatar = constants.DEFAULT_TEAM_URL" width="30"/>
             <span>{{ item.name }}</span>
             <div style="margin-left: auto;">
-              <Button icon="pi pi-pencil" severity="info" variant="text" rounded @click.stop="updatingTeam = item.id,dialog = true"/>
-              <Button icon="pi pi-trash" severity="danger" variant="text" rounded @click.stop="deletingTeam = item.id,deleteDialog = true"/>
+              <Button icon="pi pi-pencil" severity="info" variant="text" rounded @click.stop="updatingCompetition = item.id,dialog = true"/>
+              <Button icon="pi pi-trash" severity="danger" variant="text" rounded @click.stop="deletingCompetition = item.id,deleteDialog = true"/>
             </div>
           </a>
         </div>
@@ -20,27 +17,26 @@
       <Button icon="pi pi-plus" rounded @click="dialog = true" />
     </div>
   </div>
-  <CreateOrEditTeam
+  <CreateOrEditCompetition
     v-if="dialog"
-    :myTeam="true"
-    :team="updatingTeam ? updatingTeam : null"
+    :team="updatingCompetition ? updatingCompetition : null"
     :show="dialog"
-    @confirm="createOrUpdateTeamFunction"
-    @close="dialog = false, updatingTeam = null"
-  ></CreateOrEditTeam>
+    @confirm="createOrUpdateCompetitionFunction"
+    @close="dialog = false, updatingCompetition = null"
+  ></CreateOrEditCompetition>
   <DeleteDialog v-if="deleteDialog"
     :show="deleteDialog"
-    type="team"
-    @close="deleteDialog = false, deletingTeam = null"
-    @delete="deleteTeamFunction">
+    type="competition"
+    @close="deleteDialog = false, deletingCompetition = null"
+    @delete="deleteCompetitionFunction">
   </DeleteDialog> 
 </template>
 
 <script lang="ts">
-import { useTeamStore, useUserStore } from '@/stores/store';
+import { useCompetitionStore, useUserStore } from '@/stores/store';
 import { useRouter } from 'vue-router';
 import { computed, ComputedRef, ref } from 'vue';
-import { ITeam } from '@/models/team';
+import { ICompetition } from '@/models/competition';
 import { onMounted } from 'vue';
 import constants from '@/assets/constants/constants';
 import DeleteDialog from '@/components/dialogs/DeleteDialog.vue';
@@ -48,22 +44,22 @@ import DeleteDialog from '@/components/dialogs/DeleteDialog.vue';
 export default {
   setup() {
     const deleteDialog = ref(false)
-    const deletingTeam = ref(null)
+    const deletingCompetition = ref(null)
     const dialog = ref(false)
-    const updatingTeam = ref(null)
+    const updatingCompetition = ref(null)
     const router = useRouter()
     const userStore = useUserStore()
-    const teamStore = useTeamStore()
+    const competitionStore = useCompetitionStore()
     
     const user = computed(() => userStore.user)
-    const myTeams: ComputedRef<ITeam[]> = computed(() => teamStore.myTeams)
+    const myCompetitions: ComputedRef<ICompetition[]> = computed(() => competitionStore.competitions)
 
-    const createOrUpdateTeamFunction = () => {
+    const createOrUpdateCompetitionFunction = () => {
       dialog.value = false
     }
 
-    const deleteTeamFunction = () => {
-      teamStore.deleteTeam(Number(deletingTeam.value))
+    const deleteCompetitionFunction = () => {
+      competitionStore.deleteCompetition(deletingCompetition.value)
         .then(() => {
           deleteDialog.value = false
         })
@@ -73,7 +69,7 @@ export default {
     }
 
     const getInitialData = async () => {
-      await teamStore.getUserTeams(Number(user.value.id))
+      await competitionStore.getUserCompetitions(Number(user.value.id))
     }
 
     onMounted(() => {
@@ -82,21 +78,21 @@ export default {
 
     return {
       user,
-      myTeams,
+      myCompetitions,
       constants,
       router,
       deleteDialog,
-      deletingTeam,
-      deleteTeamFunction,
+      deletingCompetition,
+      deleteCompetitionFunction,
       dialog,
-      updatingTeam,
-      createOrUpdateTeamFunction
+      updatingCompetition,
+      createOrUpdateCompetitionFunction
     }
   }
 }
 </script>
 <style>
-.p-menu.teams-menu {
+.p-menu.competition-menu {
   z-index: 997;
   border: none;
   overflow-y: auto;
@@ -105,7 +101,7 @@ export default {
   height: fit-content;
 }
 
-.p-menu.teams-menu ul a {
+.p-menu.competition-menu ul a {
   display: flex;
   align-items: center;
   position: relative;
@@ -117,7 +113,7 @@ export default {
   transition: background-color var(--element-transition-duration), box-shadow var(--element-transition-duration);
 }
 
-.p-menu.teams-menu ul a.active-route {
+.p-menu.competition-menu ul a.active-route {
   font-weight: 700;
   color: var(--primary-color);
 }

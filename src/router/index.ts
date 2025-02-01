@@ -31,13 +31,19 @@ const router = createRouter({
             name: 'teams-id',
             component: () => import('@/views/teams/_id/_id.vue'),
             meta: { requiresAuth: true }
-          }
-          // {
-          //   path: '/competitions',
-          //   name: 'competitions',
-          //   component: () => import('@/views/Competitions.vue'),
-          //   meta: { requiresAuth: true }
-          // },
+          },
+          {
+            path: '/competitions',
+            name: 'competitions',
+            component: () => import('@/views/competitions/MyCompetitions.vue'),
+            meta: { requiresAuth: true }
+          },
+          {
+            path: '/competitions/:id',
+            name: 'competitions-id',
+            component: () => import('@/views/competitions/_id/_id.vue'),
+            meta: { requiresAuth: true }
+          },
           // {
           //   path: '/teams',
           //   name: 'teams',

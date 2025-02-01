@@ -1,29 +1,29 @@
 <template>
-  <Dialog v-model:visible="show" modal header="Create Team" :style="{ width: '25rem' }">
-    <span class="text-surface-500 dark:text-surface-400 block mb-8">Update your information.</span>
-    <div class="flex items-center gap-4 mb-4">
-      <!-- <label for="username" class="font-semibold w-24">Username</label>
-      <InputText id="username" class="flex-auto" autocomplete="off" /> -->
-      <!-- <FormField v-slot="$field" name="email" initialValue="" :resolver="customEmailResolver" class="flex flex-col gap-1">
-        <InputText type="text" placeholder="Nombre del equipo" />
-        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{ $field.error?.message }}</Message>
-      </FormField> -->
-    </div>
-    <div class="flex items-center gap-4 mb-8">
-      <label for="email" class="font-semibold w-24">Email</label>
-      <InputText id="email" class="flex-auto" autocomplete="off" />
-    </div>
-    <div class="flex justify-end gap-2">
-      <!-- <Button type="button" label="Cancel" severity="secondary" @click="visible = false"></Button>
-      <Button type="button" label="Save" @click="visible = false"></Button> -->
-    </div>
+  <Dialog v-model:visible="show" modal header="Create Team" :closable="false" :style="{ width: 'max-content' }">
+    <Form :initialValues @submit="onFormSubmit" class="inputs">
+      <div class="forms">
+        <FileUpload ref="fileupload" mode="basic" name="demo[]" url="/images" accept="image/*" :maxFileSize="1000000"/>
+        <FormField v-slot="$field" name="name" initialValue="" :resolver="customNameResolver">
+          <InputText type="text" placeholder="Nombre del equipo" />
+          <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{ $field.error?.message }}</Message>
+        </FormField>
+        <FormField v-slot="$field" name="season" initialValue="" :resolver="customSelectSeasonResolver">
+          <Select :options="seasonOptions" optionLabel="" placeholder="Elige una temporada" style="width: 100%;" />
+          <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{ $field.error?.message }}</Message>
+        </FormField>
+      </div>
+      <div class="buttons">
+        <Button type="button" label="Cancel" severity="secondary" @click="close"></Button>
+        <Button type="submit" label="Save"></Button>
+      </div>
+    </Form>
   </Dialog>
 </template>
 
 <script>
-import { useConfirm } from "primevue/useconfirm";
-import { onMounted } from "vue";
-import { computed, ref } from "vue";
+import { ref, reactive, computed } from "vue";
+import constants from "@/assets/constants/constants";
+import { useUserStore, useTeamStore } from "@/stores/store";
 
 export default {
   props: {
@@ -31,72 +31,137 @@ export default {
       type: Boolean,
       required: true,
       default: false
+    },
+    team: {
+      type: Object,
+      required: false
+    },
+    myTeam: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, { emit }) {
     const show = props.show
-    const confirm = useConfirm();
-    // const data = ref({
-    //   match: {
-    //     title: 'Quieres borrar este partido?',
-    //     text: 'Si aceptas, el partido se borrará y se perderán todos sus datos. Quieres continuar?'
-    //   },
-    //   jornada: {
-    //     title: 'Quieres borrar esta jornada?',
-    //     text: 'Si aceptas, la jornada se borrará y se perderán todos sus partidos y datos estadísticos. Quieres continuar?'
-    //   },
-    //   player: {
-    //     title: 'Quieres borrar este jugador?',
-    //     text: 'Si aceptas, el jugador se borrará y se perderán todos sus datos. Quieres continuar?'
-    //   },
-    //   team: {
-    //     title: 'Quieres borrar este equipo?',
-    //     text: 'Si aceptas, el equipo se borrará y se perderán todos sus partidos y datos estadísticos. Quieres continuar?'
-    //   },
-    //   competition: {
-    //     title: 'Quieres borrar esta competición?',
-    //     text: 'Si aceptas, la competición se borrará y se perderán todos sus datos. Quieres continuar?'
-    //   }
-    // })
+    const myTeam = props.myTeam
+    const fileupload = ref();
+    const userStore = useUserStore()
+    const teamStore = useTeamStore()
 
-    // const header = computed(() => data.value[props.type].title)
+    const user = computed(() => userStore.user)
+    
+    const initialValues = reactive({
+        name: '',
+        season: ''
+    });
+    const seasonOptions = ref(constants.seasons)
+    
+    const onFormSubmit = ({states, valid}) => {
+      if (valid) {
+        let teamSubmitted = {
+          name: states.name.value,
+          season: states.season.value
+        }
+        submit(teamSubmitted)
+      }
+    }
 
-    // const message = computed(() => data.value[props.type].text)
+    const submit = async(teamSubmitted) => {
+      let imageResponse = null
+      if (fileupload.value.hasFiles) {
+        try {
+          imageResponse = await uploadImage()
+        } catch (error) {
+          console.log(error)
+        }
+      }
+      if (myTeam) {
+        teamSubmitted.managerId = user.value.id
+        teamSubmitted.avatar = imageResponse != null ? constants.IMAGES_URL+imageResponse.data.filename : null
+        teamStore.addTeam(teamSubmitted).then((response) => {
+          if (response.status === 200) {
+            emit('confirm')
+          }
+        })
+      }
+      else {
+        teamStore.addNoManagerTeam(teamSubmitted).then((response) => {
+          if (response.status === 200) {
+            emit('confirm')
+          }
+        })
+      }
+    }
+    
+    const uploadImage = async() => {      
+      const fd = new FormData()
+      fd.append('image', fileupload.value.files[0], fileupload.value.files[0].name.replace(/ /g, ""))
+      try {
+        const response = await teamStore.uploadImage(fd)
+        return(response)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    
+    const close = () => {
+      emit('close')
+    }
 
-    onMounted(() => {
-    //   confirm.require({
-    //     message: message,
-    //     header: header,
-    //     icon: 'pi pi-info-circle',
-    //     rejectLabel: 'Cancel',
-    //     rejectProps: {
-    //         label: 'Cancel',
-    //         severity: 'secondary',
-    //         outlined: true
-    //     },
-    //     acceptProps: {
-    //         label: 'Delete',
-    //         severity: 'danger'
-    //     },
-    //     accept: () => {
-    //       emit('delete')
-    //         // toast.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted', life: 3000 });
-    //     },
-    //     reject: () => {
-    //       emit('close')
-    //         // toast.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
-    //     },
-    //     onHide: () => {
-    //       emit('close')
-    //     }
-    // });
-    })
+    const customNameResolver = ({ value }) => {
+      const errors = { name: []};      
+      if (!value) {
+          errors.name.push({ type: 'required', message: 'Name is required.' });
+      }
+      if (value?.length < 3) {
+          errors.name.push({ type: 'minimum', message: 'Name must be at least 3 characters long.' });
+      }
+      return {
+          errors
+      };
+    };
+    
+    const customSelectSeasonResolver = ({ value }) => {
+      const errors = { season: []};      
+      if (!value) {
+          errors.season.push({ type: 'required', message: 'Season is required.' });
+      }
+      return {
+          errors
+      };
+    };
+
     return {
-      confirm,
-      show
+      show,
+      customNameResolver,
+      customSelectSeasonResolver,
+      initialValues,
+      seasonOptions,
+      onFormSubmit,
+      close,
+      fileupload
     }
   }
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.inputs {
+  display: grid;
+  grid-auto-flow: row;
+  justify-content: center;
+  gap: 2em;
+}
+.forms {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-content: center;
+  gap: 2em;
+}
+.buttons {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: end;
+  gap: 1em;
+}
+</style>

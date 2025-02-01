@@ -2,14 +2,16 @@ import { defineStore } from 'pinia'
 import {teamActions} from '../actions/teamActions'
 import { ITeam } from '@/models/team'
 import { IPlayer } from '@/models/player'
+import { CardItem } from '@/models/types'
+import { Pichichi } from '@/models/types'
 
 export const useTeamStore = defineStore('team', {
   state: () => ({
     teams: [] as ITeam[],
     myTeams: [] as ITeam[],
     players: [] as IPlayer[],
-    pichichiList: [],
-    cardList: []
+    pichichiList: [] as Pichichi[],
+    cardList: [] as CardItem[]
   }),
   getters: {
     teamPlayers: (state) => (id: number) => {

@@ -6,24 +6,17 @@
         <p>Por favor logueate usando la plataforma</p>
       </div>
       <Form :initialValues :resolver @submit="onFormSubmit" class="grid lg:grid-cols-2 gap-4 w-full">
-
         <div class="login-form-content">
           <div class="form-item">
-            <FormField v-slot="$field" name="email" initialValue="" :resolver="customEmailResolver" class="flex flex-col gap-1">
+            <FormField v-slot="$field" name="email" initialValue="" :resolver="customEmailResolver">
                 <InputText type="text" placeholder="Email" />
                 <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{ $field.error?.message }}</Message>
             </FormField>
-            <FormField v-slot="$field" name="password" initialValue="" :resolver="customPasswordResolver" class="flex flex-col gap-1">
+            <FormField v-slot="$field" name="password" initialValue="" :resolver="customPasswordResolver">
                 <Password type="text" placeholder="Password" :feedback="false" toggleMask fluid />
                 <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{ $field.error?.message }}</Message>
             </FormField>
-            <!-- <InputText name="username" type="text" placeholder="Username" fluid />
-            <Message v-if="$form.username?.invalid" severity="error" size="small" variant="simple">{{ $form.username.error.message }}</Message> -->
           </div>
-          <!-- <div class="form-item">
-            <Password name="password" placeholder="Password" :feedback="false" toggleMask fluid />
-            <Message v-if="$form.password?.invalid" severity="error" size="small" variant="simple">{{ $form.password.error.message }}</Message>
-          </div> -->
           <Button type="submit" severity="secondary" label="Submit" />
         </div>
       </Form>
@@ -48,7 +41,6 @@
 </template>
 
 <script>
-import { ref } from 'vue'
 import { useUserStore } from '@/stores/store.ts'
 import { useToast } from 'primevue/usetoast';
 import { reactive } from 'vue';
@@ -63,6 +55,16 @@ export default {
         password: ''
     });
     const userStore = useUserStore()
+
+    const onFormSubmit = ({states, valid}) => {
+      if (valid) {
+        let credentials = {
+          username: states.email.value,
+          password: states.password.value
+        }
+        submit(credentials)
+      }
+    }
 
     const submit = (credentials) => {
       console.log(credentials);
@@ -101,16 +103,6 @@ export default {
           errors.password.push({ type: 'minimum', message: 'Password must be 25 characters long maximum.' });
       }
       return { errors };
-    }
-
-    const onFormSubmit = ({states, valid}) => {
-      if (valid) {
-        let credentials = {
-          username: states.email.value,
-          password: states.password.value
-        }
-        submit(credentials)
-      }
     }
   
     return {
