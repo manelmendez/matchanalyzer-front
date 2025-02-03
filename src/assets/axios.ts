@@ -1,19 +1,23 @@
 import axios from 'axios'
-import constants from './constants/constants'
-import { pinia, useRootStore } from '../stores/store'
-import router from '../router'
+import constants from './constants/constants.js'
+import { pinia, useRootStore } from '../stores/store.js'
+import router from '../router/index.js'
 
-axios.defaults.baseURL = constants.API_ADDRESS
+const axiosInstance = axios.create({
+  baseURL: constants.API_ADDRESS
+})
+
+axiosInstance.defaults.headers.common['Accept'] = 'application/json';
+axiosInstance.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+axiosInstance.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencoded';
 
 // add token to Auth header if onceLogged
 const authUser = window.localStorage.getItem('authUser');
 if (authUser) {
   const parsedAuthUser = JSON.parse(authUser);
-  axios.defaults.headers.common['Authorization'] = 'Bearer ' + parsedAuthUser.token;
-  axios.defaults.headers.common['Accept'] = 'application/json';
-  axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
-  axios.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencoded';
+  axiosInstance.defaults.headers.common['Authorization'] = 'Bearer ' + parsedAuthUser.token;
 }
+
 // Initialize Pinia
 const store = useRootStore(pinia);
 axios.interceptors.response.use(
