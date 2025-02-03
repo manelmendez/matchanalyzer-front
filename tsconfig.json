@@ -7,7 +7,7 @@
   ],
   "compilerOptions": {
     "target": "esnext",
-    "module": "esnext",
+    "module": "Node16",
     "strict": true,
     "jsx": "preserve",
     "importHelpers": true,
