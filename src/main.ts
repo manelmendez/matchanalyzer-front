@@ -18,6 +18,10 @@ app.use(PrimeVue, {
   theme: {
     preset: Aura,
     options: {
+      cssLayer: {
+        name: "primevue",
+        order: "base, primevue",
+      },
       darkModeSelector: '.my-app-dark',
     },
   },
