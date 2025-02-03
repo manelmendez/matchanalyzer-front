@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from '@/assets/axios'
 import { useUserStore } from '../modules/user'
 
 export const userActions = {

@@ -10,7 +10,7 @@ import ToastService from 'primevue/toastservice'
 import App from './App.vue'
 import router from './router'
 import { pinia, useUserStore } from './stores/store'
-import * as axiosConfig from './assets/axios'
+import axiosInstance from './assets/axios'
 
 const app = createApp(App)
 
@@ -27,7 +27,7 @@ app.use(PrimeVue, {
   },
 })
 app.use(pinia)
-app.config.globalProperties.$axios = axiosConfig
+app.config.globalProperties.$axios = axiosInstance
 const userStore = useUserStore()
 userStore.initializeStore()
 app.use(router)

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from '@/assets/axios'
 import { useCompetitionStore } from "../../stores/store";
 
 // COMPETITION

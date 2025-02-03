@@ -9,6 +9,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.defaults.headers.common['Accept'] = 'application/json';
 axiosInstance.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+axiosInstance.defaults.headers.common['Content-Type'] = 'application/json';
 
 // add token to Auth header if onceLogged
 const authUser = window.localStorage.getItem('authUser');
@@ -18,8 +19,8 @@ if (authUser) {
 }
 
 // Initialize Pinia
-const store = useRootStore(pinia);
-axios.interceptors.response.use(
+// const store = useRootStore(pinia);
+axiosInstance.interceptors.response.use(
   function (response) {
     // if (response.status == 200 && response.config.method != "get") {
     //   let snackbar = {
@@ -59,3 +60,5 @@ axios.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+
+export default axiosInstance
