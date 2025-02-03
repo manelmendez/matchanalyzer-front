@@ -16,7 +16,6 @@ declare module 'vue' {
     Column: typeof import('primevue/column')['default']
     CompetitionCarousel: typeof import('./src/components/dashboard/CompetitionCarousel.vue')['default']
     ConfirmDialog: typeof import('primevue/confirmdialog')['default']
-    copy: typeof import('./src/components/dialogs/CreateOrEditTeam copy.vue')['default']
     CreateOrEditCompetition: typeof import('./src/components/dialogs/CreateOrEditCompetition.vue')['default']
     CreateOrEditTeam: typeof import('./src/components/dialogs/CreateOrEditTeam.vue')['default']
     DataTable: typeof import('primevue/datatable')['default']
