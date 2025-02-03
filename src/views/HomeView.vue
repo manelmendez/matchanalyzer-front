@@ -21,7 +21,7 @@
 import { computed, onMounted, ComputedRef } from 'vue'
 import { useUserStore, useTeamStore, useCompetitionStore } from '@/stores/store'
 import TeamCarousel from '@/components/dashboard/TeamCarousel.vue'
-import CompetitionCarousel from '@/components/dashboard/competitionCarousel.vue';
+import CompetitionCarousel from '@/components/dashboard/CompetitionCarousel.vue';
 import { IUser } from '@/models/user';
 import { ITeam } from '@/models/team';
 import { ICompetition } from '@/models/competition';
