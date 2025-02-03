@@ -56,6 +56,7 @@ import router from '@/router';
 import { CardItem } from '@/models/types';
 import { Pichichi } from '@/models/types';
 import { IPlayer } from '@/models/player';
+import colors from 'tailwindcss/colors';
 
 export default {
   name: "team-details",
@@ -110,11 +111,11 @@ export default {
           goals4.push(cuarto.roundsGoals[i])
           goals5.push(quinto.roundsGoals[i])
         }
-        const primaryColor = '#000000'
-        const secondaryColor = '#000000'
-        const color3 = '#000000'
-        const color4 = '#000000'
-        const color5 = '#000000'
+        const primaryColor = colors.red[500]
+        const secondaryColor = colors.teal[500]
+        const color3 = colors.lime[500]
+        const color4 = colors.cyan[500]
+        const color5 = colors.amber[500]
 
         return {
           labels: labels,
@@ -178,9 +179,9 @@ export default {
           cards2.push(segundo.roundCards[i])
           cards3.push(tercero.roundCards[i])
         }
-        const primaryColor = '#000000'
-        const secondaryColor = '#000000'
-        const color3 = '#000000'
+        const primaryColor = colors.red[500]
+        const secondaryColor = colors.teal[500]
+        const color3 = colors.lime[500]
 
         return {
           labels: labels,
