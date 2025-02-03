@@ -1,0 +1,28 @@
+name: Deployment Workflow
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: 
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    steps:
+      # - name: Traer el codigo
+      #   uses: actions/checkout@v4
+      # - name: Setup Node
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: 22
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Deploy vuetify client to raspy
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            cd /home/ubuntu/workspace/matchanalyzer-front || exit
+            git pull origin main
+            docker-compose -f docker-compose-raspy.yml up -d --build
+          EOF

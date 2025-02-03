@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  matchanalyzer-front:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      args:
+        environment: "raspy"
+    container_name: "matchanalyzer-front"
+    restart: always
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./dist:/var/www/html
+    networks:
+      - matchanalyzer_ma_backend
+networks:
+  matchanalyzer_ma_backend:
+    external: true
