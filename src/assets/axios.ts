@@ -18,6 +18,20 @@ if (authUser) {
   axiosInstance.defaults.headers.common['Authorization'] = 'Bearer ' + parsedAuthUser.token;
 }
 
+axiosInstance.interceptors.request.use(
+  function (response) {
+    console.log(response)
+    // if (response.status == 200 && response.config.method != "get") {
+    //   let snackbar = {
+    //     show: true,
+    //     color: "success",
+    //     text: response.data.message
+    //   }
+    //   store.commit("root/SNACKBAR", snackbar);
+    // }
+    return response
+  }
+)
 // Initialize Pinia
 // const store = useRootStore(pinia);
 axiosInstance.interceptors.response.use(
