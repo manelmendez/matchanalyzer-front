@@ -15,15 +15,6 @@ body {
   padding: 0;
 }
 
-#app {
-  margin: 0 auto;
-  padding: 6em 2em 2em 2em;
-  font-weight: normal;
-  display: grid;
-  grid-template-columns: 14em 1fr;
-  gap: 2em;
-}
-
 main {
   height: fit-content;
   display: grid;

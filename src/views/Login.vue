@@ -44,12 +44,13 @@
 import { useUserStore } from '@/stores/store.ts'
 import { useToast } from 'primevue/usetoast';
 import { reactive } from 'vue';
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'Login',
   setup() {
-    const toast = useToast();
-
+    const toast = useToast()
+    const router = useRouter()
     const initialValues = reactive({
         email: '',
         password: ''
@@ -70,7 +71,7 @@ export default {
       console.log(credentials);
       userStore.signIn(credentials).then(() => {
         toast.add({ severity: 'success', summary: 'Logueado correctamente', life: 3000 });
-        this.$router.push({
+        router.push({
           name: 'dashboard' //si uso path: "/mainpage" el params (props) no funciona -- params: { user: response.data.user } --
         })
       })
@@ -118,17 +119,6 @@ export default {
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;600&display=swap");
-* {
-  box-sizing: border-box;
-}
-
-body {
-  padding: 0;
-  margin: 0;
-  font-family: "Inter", sans-serif;
-  background: linear-gradient(45deg, #131086, #b621f3);
-  padding: 40px;
-}
 
 .container {
   min-height: calc(100vh - 80px);
@@ -136,6 +126,8 @@ body {
   grid-template-columns: 50% 50%;
   border-radius: 10px;
   overflow: hidden;
+  justify-content: center;
+  min-width: 100%;
 }
 
 .login-left {

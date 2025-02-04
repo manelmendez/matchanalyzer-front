@@ -8,7 +8,7 @@
       <Button label="Ir a la competición" icon="pi pi-chevron-right" iconPos="right" rounded />
     </template>
   </Card>
-  <div class="myteam-content">
+  <div class="myteam-content md:grid-cols-1 md:grid-flow-row-dense">
     <div class="myteam-charts" v-if="pichichiList || cardList">
       <Card v-if="pichichiList">
         <template #content>
@@ -22,7 +22,7 @@
       </Card>
     </div>
     <div class="myteam-players">
-      <DataTable :value="myTeam?.players" tableStyle="min-width: 50rem;" style=" border-radius: 0.6em">
+      <DataTable :value="myTeam?.players" style=" border-radius: 0.6em">
         <Column>
           <template #body="{ data }">
             <Avatar class="menu-avatar" :label="initials(data)" shape="circle" aria-haspopup="true" aria-controls="overlay_menu"
@@ -311,17 +311,28 @@ export default {
 }
 .myteam-content {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  /* grid-template-columns: 1fr 2fr; */
   gap: 2em
 }
-@media (max-width: 1080px) {
+/* @media (max-width: 1280px) and (min-width: 1081px) {
   .myteam-content {
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: none;
+    grid-template-rows: auto;
+  }
+  .myteam-charts {
+    grid-template-rows: none !important;
+    grid-template-columns: 1fr 1fr;
   }
 }
+@media (max-width: 1080px) {
+  .myteam-charts {
+    grid-template-rows: auto;
+    grid-template-columns: none;
+  }
+} */
 .myteam-charts {
   display: grid;
-  grid-template-rows: 1fr 1fr;
+  /* grid-template-rows: 1fr 1fr; */
   gap: 2em;
   height: fit-content;
 }

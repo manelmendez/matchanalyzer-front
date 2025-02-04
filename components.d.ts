@@ -28,6 +28,7 @@ declare module 'vue' {
     InputText: typeof import('primevue/inputtext')['default']
     Menu: typeof import('primevue/menu')['default']
     Message: typeof import('primevue/message')['default']
+    Password: typeof import('primevue/password')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Select: typeof import('primevue/select')['default']
@@ -36,6 +37,7 @@ declare module 'vue' {
     Tabs: typeof import('primevue/tabs')['default']
     Tag: typeof import('primevue/tag')['default']
     TeamCarousel: typeof import('./src/components/dashboard/TeamCarousel.vue')['default']
+    Toast: typeof import('primevue/toast')['default']
     Toolbar: typeof import('primevue/toolbar')['default']
   }
   export interface ComponentCustomProperties {
