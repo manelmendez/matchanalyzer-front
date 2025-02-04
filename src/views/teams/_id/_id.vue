@@ -314,7 +314,7 @@ export default {
   grid-template-columns: 1fr 2fr;
   gap: 2em
 }
-@media (max-width: 1280px) {
+@media (max-width: 1080px) {
   .myteam-content {
     grid-template-columns: repeat(1, 1fr);
   }

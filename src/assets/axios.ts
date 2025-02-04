@@ -9,7 +9,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.defaults.headers.common['Accept'] = 'application/json';
 axiosInstance.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
-axiosInstance.defaults.headers.common['Content-Type'] = 'application/json';
+axiosInstance.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencoded';
 
 // add token to Auth header if onceLogged
 const authUser = window.localStorage.getItem('authUser');
@@ -44,18 +44,18 @@ axiosInstance.interceptors.response.use(
         // TODO
       } else if (error.response.status >= 400) {
         snackbar.text = error.response.data.message
-        store.snackbar = snackbar;
+        // store.snackbar = snackbar;
         // if (error.response.status == 404) {
         //   router.push({name: "error"});
         // }
       } else {
         snackbar.text = 'Error en la petición'
-        store.snackbar = snackbar;
+        // store.snackbar = snackbar;
       }
     } else if (error.request) {
       snackbar.text = 'Se ha perdido la conexión con el servidor'
       router.push('500')
-      store.snackbar = snackbar;
+      // store.snackbar = snackbar;
     }
     return Promise.reject(error)
   }
