@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 
 export const useRootStore = defineStore('root', {
   state: () => ({
-    toast: { severity: 'success', summary: 'Logueado correctamente', life: 3000 },
+    toast: { severity: '', summary: '', detail: '', life: 3000 },
     theme: window.localStorage.getItem('theme'),
     displayMenu: true
   }),

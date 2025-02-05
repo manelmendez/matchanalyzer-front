@@ -36,20 +36,17 @@
     <div class="login-right">
       <img src="../assets/image.svg" alt="image">
     </div>
-    <Toast />
   </div>
 </template>
 
 <script>
 import { useUserStore } from '@/stores/store.ts'
-import { useToast } from 'primevue/usetoast';
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 
 export default {
   name: 'Login',
   setup() {
-    const toast = useToast()
     const router = useRouter()
     const initialValues = reactive({
         email: '',
@@ -68,9 +65,7 @@ export default {
     }
 
     const submit = (credentials) => {
-      console.log(credentials);
       userStore.signIn(credentials).then(() => {
-        toast.add({ severity: 'success', summary: 'Logueado correctamente', life: 3000 });
         router.push({
           name: 'dashboard' //si uso path: "/mainpage" el params (props) no funciona -- params: { user: response.data.user } --
         })

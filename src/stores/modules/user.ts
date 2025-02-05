@@ -3,7 +3,8 @@ import { userActions } from '../actions/userActions'
 import { IUser } from '../../models/user'
 export const useUserStore = defineStore('user', {
   state: () => ({
-    user: {} as IUser
+    user: {} as IUser,
+    isLogged: false
   }),
   actions: {
     ...userActions,

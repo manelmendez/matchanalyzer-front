@@ -11,7 +11,7 @@
       <template #end>
         <Button type="button" @click="toggleDarkMode" size="small" rounded variant="outlined" 
           :icon="iconSelect()" />
-        <Avatar class="menu-avatar" :label="initials()" shape="circle" @click="toggle" aria-haspopup="true" aria-controls="overlay_menu"
+        <Avatar class="menu-avatar" :label="initials()" shape="circle" @click="toggle"
           style="background-color: var(--p-primary-color); cursor: pointer;" />
         <Menu class="user-menu" ref="menu" id="overlay_menu" :model="menuItems" :popup="true" />
       </template>
@@ -23,18 +23,20 @@ import { ref, computed } from 'vue'
 import { useUserStore, useRootStore } from '@/stores/store'
 import { IUser } from '@/models/user';
 import { onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
 export default {
   name: "AppToolbar",
   setup() {
     const isDarkTheme = ref(window.localStorage.getItem('dark') == "true" ? true : false)
+    const router = useRouter()
     const userStore = useUserStore()
     const rootStore = useRootStore()
     const user = computed<IUser>(() => userStore.user)
     const menu = ref();
     const menuItems = ref([
       { label: "Perfil", command: () => { /* handle profile click */ } },
-      { label: "Logout", command: () => { /* handle logout click */ } }
+      { label: "Logout", command: () => { logout() } }
     ])
 
     const displayMenu = () => {
@@ -68,6 +70,15 @@ export default {
         document.documentElement.classList.toggle('my-app-dark')
       }
     }
+
+    const logout = () => {
+      window.localStorage.removeItem('authUser')
+      userStore.signOut
+      let toast = {severity: 'success', summary: 'Ha cerrado sesión', detail: '', life: 3000 }
+      rootStore.toast = toast;
+      router.push('/login')
+    }
+
     onMounted(() => {
       setInitialTheme()
     })

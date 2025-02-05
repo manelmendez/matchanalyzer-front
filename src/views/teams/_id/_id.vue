@@ -5,7 +5,8 @@
             <Image :src="constants.ADDRESS + avatar" :error="avatar = constants.DEFAULT_TEAM_URL" width="25" style="margin-right: .5em;" />
             <span>{{ myTeam?.name }}</span>
       </Tag>
-      <Button label="Ir a la competición" icon="pi pi-chevron-right" iconPos="right" rounded />
+      <Button label="Ir a la competición" icon="pi pi-chevron-right" iconPos="right" rounded
+        @click="router.push({name: 'summary',params: {id: myTeam?.competitionId,roundId: 'latest'}})" />
     </template>
   </Card>
   <div class="myteam-content lg:grid-cols-2 md:grid-flow-row-dense">
@@ -53,11 +54,10 @@
 </template>
 <script lang="ts">
 import { useTeamStore, useUserStore } from '@/stores/store';
-import { computed, ComputedRef, ref } from 'vue';
+import { computed, ComputedRef, ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { ITeam } from '@/models/team';
-import { onMounted } from 'vue';
 import constants from '@/assets/constants/constants';
-import router from '@/router';
 import { CardItem } from '@/models/types';
 import { Pichichi } from '@/models/types';
 import { IPlayer } from '@/models/player';
@@ -68,6 +68,7 @@ export default {
   setup() {
     const userStore = useUserStore()
     const teamStore = useTeamStore()
+    const router = useRouter()
     const user = computed(() => userStore.user)
     const myTeam: ComputedRef<ITeam | undefined> = computed(() => teamStore.myTeamById(Number(router.currentRoute.value.params.id)))
     const pichichis: ComputedRef<Pichichi[] | undefined> = computed(() => teamStore.pichichiList)
@@ -300,7 +301,8 @@ export default {
       pichichiOptions,
       cardOptions,
       initials,
-      avatar
+      avatar,
+      router
     }
   }
 }

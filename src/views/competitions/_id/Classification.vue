@@ -12,7 +12,7 @@
       <Card>
         <template #content>
           <div class="grid grid-cols-2 gap-2">
-            <Select @change="roundChange" v-model="round" :options="rounds" optionLabel="name" placeholder="Selecciona una ronda" class="w-35" />
+            <Select @change="roundChange" v-model="round" :options="rounds" optionLabel="name" placeholder="Selecciona una ronda" class="w-36" />
             <div class="flex justify-end gap-4 items-center">
               <div class="flex items-center gap-2">
                 Ver detalles<ToggleSwitch v-model="details" />
@@ -69,7 +69,7 @@ export default {
       let res = str.split(' ')
       competitionStore.selectedRound = Number(res[1])
       router.push({
-        name: 'results',
+        name: 'rankings',
         params: {
           id: Number(router.currentRoute.value.params.id),
           roundId: res[1]

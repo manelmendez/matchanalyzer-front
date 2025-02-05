@@ -1,5 +1,6 @@
 import axios from '@/assets/axios'
 import { useUserStore } from '../modules/user'
+import { IUser } from '@/models/user'
 
 export const userActions = {
   initializeStore() {
@@ -14,7 +15,6 @@ export const userActions = {
   signIn(credentials: any) {
     const userStore = useUserStore()
     console.log('ACTION -- signIn')
-    console.log(credentials);
     return axios
       .post('users/signin', {}, { auth: credentials })
       .then((response) => {
@@ -47,6 +47,7 @@ export const userActions = {
           'Bearer ' + response.data.token
         window.localStorage.setItem('authUser', JSON.stringify(authUser))
         userStore.user = { ...authUser }
+        userStore.isLogged = true
         return response
       })
   },
@@ -54,7 +55,8 @@ export const userActions = {
   signOut() {
     const userStore = useUserStore()
     console.log('ACTION -- signOut')
-    userStore.user = { isLogged: false }
+    userStore.user = {} as IUser
+    userStore.isLogged = false
     window.localStorage.removeItem('authUser')
     delete axios.defaults.headers.common['Authorization']
   }
