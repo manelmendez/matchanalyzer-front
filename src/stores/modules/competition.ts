@@ -22,12 +22,16 @@ export const useCompetitionStore = defineStore('competition', {
     goals: [] as Goal[],
     assists: [] as Assist[],
     cards: [] as Card[],
-    substitutions: [] as Substitution[]
+    substitutions: [] as Substitution[],
+    selectedRound: 0
   }),
   getters: {
-    competition: (state) => {
-      state.competition.rounds = state.rounds
-      return state.competition
+    competitionById: (state) => (id:number) => {
+      const competition = state.competitions.find((competition) => competition.id == id)
+      if (competition) {
+        state.competition = competition
+      }
+      return competition
     },
     competitionTeams: (state) => state.competition.teams ? state.competition.teams.sort((a, b) => a.name.localeCompare(b.name)) : [],
     round: (state) => (selectedRound: any) => {
@@ -111,9 +115,9 @@ export const useCompetitionStore = defineStore('competition', {
           while (actualRound.matches && j < actualRound.matches.length && !found) {
             if (
               actualCompetition.teams[i].id ==
-              actualRound.matches[j].localTeam.id ||
+              actualRound.matches[j].localTeam?.id ||
               actualCompetition.teams[i].id ==
-              actualRound.matches[j].awayTeam.id
+              actualRound.matches[j].awayTeam?.id
             ) {
               found = true
               let index = actualRoundTeams
@@ -169,7 +173,7 @@ export const useCompetitionStore = defineStore('competition', {
             let x = 0
             let found = false
             while (matches && x < matches.length && !found) {
-              if (matches[x].localTeam.id == teams[i].id) {
+              if (matches[x].localTeam?.id == teams[i].id) {
                 teamStats.gamesPlayed += 1
                 teamStats.homeGamesPlayed += 1
                 teamStats.goals += Number(matches[x].localTeamGoals)
@@ -208,7 +212,7 @@ export const useCompetitionStore = defineStore('competition', {
                   teamStats.homeLoses += 1
                 }
                 found = true
-              } else if (matches[x].awayTeam.id == teams[i].id) {
+              } else if (matches[x].awayTeam?.id == teams[i].id) {
                 teamStats.gamesPlayed += 1
                 teamStats.awayGamesPlayed += 1
                 teamStats.goals += Number(matches[x].awayTeamGoals)
@@ -255,7 +259,7 @@ export const useCompetitionStore = defineStore('competition', {
           updatedTeams.push(updatedTeam)
         }
         // esto ordena primero por puntos y luego por diferencia de goles
-        return updatedTeams.sort(function (b:ITeam, a:ITeam) {
+        return updatedTeams.sort(function (b: ITeam, a: ITeam) {
           //si los puntos de los dos equipos son distintos
           if (a.stats && b.stats && a.stats.points !== b.stats.points) {
             //devuelve positivo (+) o negativo (-) según quien tenga más
@@ -266,21 +270,21 @@ export const useCompetitionStore = defineStore('competition', {
             let matches: Match[] = []
             //coger todos los partidos
             for (let x = 0; x < actualRound; x++) {
-              matches = [...matches, ...state.rounds[x].matches]
+              matches = [...matches, ...(state.rounds[x].matches || [])]
             }
             let duelMatches = []
             //buscar los partidos que esos 2 equipos hayan jugado entre ellos
-            console.time('reduce')
-            duelMatches = matches.reduce((acc, el) => {
+            // console.time('reduce')
+            duelMatches = (matches || []).reduce<Match[]>((acc, el) => {
               if (
-                (el.localTeam.id === a.id && el.awayTeam.id === b.id) ||
-                (el.localTeam.id === b.id && el.awayTeam.id === a.id)
+                (el.localTeam?.id === a.id && el.awayTeam?.id === b.id) ||
+                (el.localTeam?.id === b.id && el.awayTeam?.id === a.id)
               ) {
                 return [...acc, el]
               }
               return acc
             }, [])
-            console.timeEnd('reduce')
+            // console.timeEnd('reduce')
             // antigua forma FOR vs REDUCE (segun los timers REDUCE es mas rapido)
             // console.time('for')
             // for (let y = 0; y < matches.length; y++) {
@@ -301,7 +305,7 @@ export const useCompetitionStore = defineStore('competition', {
             let goalDifference = 0 // positiva o negativa segun resultados, o 0
             for (let z = 0; z < duelMatches.length; z++) {
               if (
-                duelMatches[z].localTeam.id == a.id &&
+                duelMatches[z].localTeam?.id == a.id &&
                 Number(duelMatches[z].localTeamGoals) >
                 Number(duelMatches[z].awayTeamGoals)
               ) {
@@ -310,7 +314,7 @@ export const useCompetitionStore = defineStore('competition', {
                   Number(duelMatches[z].localTeamGoals) -
                   Number(duelMatches[z].awayTeamGoals)
               } else if (
-                duelMatches[z].awayTeam.id == a.id &&
+                duelMatches[z].awayTeam?.id == a.id &&
                 Number(duelMatches[z].awayTeamGoals) >
                 Number(duelMatches[z].localTeamGoals)
               ) {
@@ -319,19 +323,19 @@ export const useCompetitionStore = defineStore('competition', {
                   Number(duelMatches[z].awayTeamGoals) -
                   Number(duelMatches[z].localTeamGoals)
               } else if (
-                duelMatches[z].localTeam.id == a.id &&
+                duelMatches[z].localTeam?.id == a.id &&
                 Number(duelMatches[z].localTeamGoals) ==
                 Number(duelMatches[z].awayTeamGoals)
               ) {
                 aDraw++
               } else if (
-                duelMatches[z].awayTeam.id == a.id &&
+                duelMatches[z].awayTeam?.id == a.id &&
                 Number(duelMatches[z].awayTeamGoals) ==
                 Number(duelMatches[z].localTeamGoals)
               ) {
                 aDraw++
               } else if (
-                duelMatches[z].localTeam.id == a.id &&
+                duelMatches[z].localTeam?.id == a.id &&
                 Number(duelMatches[z].localTeamGoals) <
                 Number(duelMatches[z].awayTeamGoals)
               ) {
@@ -340,7 +344,7 @@ export const useCompetitionStore = defineStore('competition', {
                   Number(duelMatches[z].localTeamGoals) -
                   Number(duelMatches[z].awayTeamGoals)
               } else if (
-                duelMatches[z].awayTeam.id == a.id &&
+                duelMatches[z].awayTeam?.id == a.id &&
                 Number(duelMatches[z].awayTeamGoals) <
                 Number(duelMatches[z].localTeamGoals)
               ) {
@@ -367,10 +371,8 @@ export const useCompetitionStore = defineStore('competition', {
                   return -1
                 } else {
                   // si la diferencia de goles es igual, devuelve +1 o -1 según quien tenga más goles
-                  return a.stats.goals - a.stats.againstGoals >
-                    b.stats.goals - b.stats.againstGoals
-                    ? 1
-                    : -1
+                  return (a.stats.goals - a.stats.againstGoals) -
+                    (b.stats.goals - b.stats.againstGoals)
                 }
               }
             }
@@ -389,10 +391,8 @@ export const useCompetitionStore = defineStore('competition', {
                   return -1
                 } else {
                   // si la diferencia de goles es igual, devuelve +1 o -1 según quien tenga más goles
-                  return a.stats.goals - a.stats.againstGoals >
-                    b.stats.goals - b.stats.againstGoals
-                    ? 1
-                    : -1
+                  return (a.stats.goals - a.stats.againstGoals) -
+                    (b.stats.goals - b.stats.againstGoals)
                 }
               }
             } else {
@@ -418,16 +418,15 @@ export const useCompetitionStore = defineStore('competition', {
               }
             }
           }
+          return 0
         })
       } else {
         return []
       }
     },
-    topScorers: (state: any, getters: any) => (selectedRound: any): ITeam[] => {
-      selectedRound =
-      selectedRound == 'latest' ? state.rounds.length - 1 : selectedRound
+    topScorers: (state: any) => (selectedRound: any): ITeam[] => {
       let orderTeams: ITeam[] = JSON.parse(
-      JSON.stringify(getters.rankedTeams(selectedRound))
+      JSON.stringify(state.rankedTeams(selectedRound))
       )
       return JSON.parse(
       JSON.stringify(
@@ -437,11 +436,9 @@ export const useCompetitionStore = defineStore('competition', {
       )
       )
     },
-    mostTrashed: (state: any, getters: any) => (selectedRound: any): ITeam[] => {
-      selectedRound =
-        selectedRound == 'latest' ? state.rounds.length - 1 : selectedRound
+    mostTrashed: (state: any) => (selectedRound: any): ITeam[] => {
       let orderTeams = JSON.parse(
-        JSON.stringify(getters.rankedTeams(selectedRound))
+        JSON.stringify(state.rankedTeams(selectedRound))
       )
       return JSON.parse(
         JSON.stringify(
@@ -451,303 +448,302 @@ export const useCompetitionStore = defineStore('competition', {
         )
       )
     },
-    topDifference: (state: any, getters: any) => (selectedRound: any): ITeam[] => {
-      selectedRound =
-      selectedRound == 'latest' ? state.rounds.length - 1 : selectedRound
+    topDifference: (state: any) => (selectedRound: any): ITeam[] => {
       let orderTeams: ITeam[] = JSON.parse(
-      JSON.stringify(getters.rankedTeams(selectedRound))
+      JSON.stringify(state.rankedTeams(selectedRound))
       )
       return JSON.parse(
-      JSON.stringify(
-        orderTeams.sort(function (b: ITeam, a: ITeam) {
-        return (a.stats?.goalDif ?? 0) - (b.stats?.goalDif ?? 0)
-        })
-      )
-      )
-    },
-    statsPerRound: (state: any): any[] => {
-      if (state.competition.teams && state.rounds && state.rounds.length != 0) {
-        let teams = [...state.competition.teams]
-        let roundRankings = []
-        for (let r = 0; r < state.rounds.length; r++) {
-          let roundRanking = { ...state.rounds[r] }
-          let updatedTeams = []
-          // sumar todas las jornadas hasta la seleccionada
-          for (let i = 0; i < teams.length; i++) {
-            let updatedTeam = { ...teams[i] }
-            let teamStats = {
-              gamesPlayed: 0,
-              homeGamesPlayed: 0,
-              awayGamesPlayed: 0,
-              points: 0,
-              homePoints: 0,
-              awayPoints: 0,
-              wins: 0,
-              homeWins: 0,
-              awayWins: 0,
-              draws: 0,
-              homeDraws: 0,
-              awayDraws: 0,
-              loses: 0,
-              homeLoses: 0,
-              awayLoses: 0,
-              goals: 0,
-              homeGoals: 0,
-              awayGoals: 0,
-              againstGoals: 0,
-              homeAgainstGoals: 0,
-              awayAgainstGoals: 0
-            }
-            let actualRound = r + 1
-            for (let j = 0; j < actualRound; j++) {
-              let matches = state.rounds[j].matches
-              let x = 0
-              let found = false
-              while (x < matches.length && !found) {
-                if (matches[x].localTeam.id == teams[i].id) {
-                  teamStats.gamesPlayed += 1
-                  teamStats.homeGamesPlayed += 1
-                  teamStats.goals += Number(matches[x].localTeamGoals)
-                  teamStats.homeGoals += Number(matches[x].localTeamGoals)
-                  teamStats.againstGoals += Number(matches[x].awayTeamGoals)
-                  teamStats.homeAgainstGoals += Number(matches[x].awayTeamGoals)
-                  if (
-                    Number(matches[x].localTeamGoals) >
-                    Number(matches[x].awayTeamGoals)
-                  ) {
-                    teamStats.homePoints += 3
-                    teamStats.points += 3
-                    teamStats.wins += 1
-                    teamStats.homeWins += 1
-                  } else if (
-                    Number(matches[x].localTeamGoals) ==
-                    Number(matches[x].awayTeamGoals)
-                  ) {
-                    teamStats.homePoints += 1
-                    teamStats.points += 1
-                    teamStats.draws += 1
-                    teamStats.homeDraws += 1
-                  } else if (
-                    Number(matches[x].localTeamGoals) <
-                    Number(matches[x].awayTeamGoals)
-                  ) {
-                    teamStats.homePoints += 0
-                    teamStats.points += 0
-                    teamStats.loses += 1
-                    teamStats.homeLoses += 1
-                  }
-                  found = true
-                } else if (matches[x].awayTeam.id == teams[i].id) {
-                  teamStats.gamesPlayed += 1
-                  teamStats.awayGamesPlayed += 1
-                  teamStats.goals += Number(matches[x].awayTeamGoals)
-                  teamStats.awayGoals += Number(matches[x].awayTeamGoals)
-                  teamStats.againstGoals += Number(matches[x].localTeamGoals)
-                  teamStats.awayAgainstGoals += Number(
-                    matches[x].localTeamGoals
-                  )
-                  if (
-                    Number(matches[x].awayTeamGoals) >
-                    Number(matches[x].localTeamGoals)
-                  ) {
-                    teamStats.awayPoints += 3
-                    teamStats.points += 3
-                    teamStats.wins += 1
-                    teamStats.awayWins += 1
-                  } else if (
-                    Number(matches[x].awayTeamGoals) ==
-                    Number(matches[x].localTeamGoals)
-                  ) {
-                    teamStats.awayPoints += 1
-                    teamStats.points += 1
-                    teamStats.draws += 1
-                    teamStats.awayDraws += 1
-                  } else if (
-                    Number(matches[x].awayTeamGoals) <
-                    Number(matches[x].localTeamGoals)
-                  ) {
-                    teamStats.awayPoints += 0
-                    teamStats.points += 0
-                    teamStats.loses += 1
-                    teamStats.awayLoses += 1
-                  }
-                  found = true
-                }
-                x++
-              }
-            }
-            updatedTeam.stats = teamStats
-            updatedTeams.push(updatedTeam)
-          }
-          // esto ordena primero por puntos y luego por diferencia de goles
-          roundRanking.ranking = updatedTeams.sort(function (b, a) {
-            //si los puntos de los dos equipos son distintos
-            if (a.stats.points !== b.stats.points) {
-              //devuelve positivo (+) o negativo (-) según quien tenga más
-              return a.stats.points - b.stats.points
-            }
-            //si los puntos son iguales pasa a hacer lo siguiente:
-            else if (a.stats.points == b.stats.points) {
-              let matches: Match[] = []
-              //coger todos los partidos
-              for (let x = 0; x < state.rounds.length; x++) {
-                matches = [...matches, ...state.rounds[x].matches]
-              }
-              let duelMatches = []
-              //buscar los partidos que esos 2 equipos hayan jugado entre ellos
-              for (let y = 0; y < matches.length; y++) {
-                if (
-                  (matches[y] && matches[y].localTeam && matches[y].awayTeam &&
-                    matches[y].localTeam?.id === a.id &&
-                    matches[y].awayTeam?.id === b.id) ||
-                  (matches[y] && matches[y].localTeam && matches[y].awayTeam &&
-                    matches[y].localTeam?.id === b.id &&
-                    matches[y].awayTeam?.id === a.id)
-                ) {
-                  duelMatches.push(matches[y])
-                }
-              }
-              //buscar diferencia de victorias/empates/derrotas
-              let aWin = 0
-              let aDraw = 0
-              let aLose = 0
-              let goalDifference = 0
-              for (let z = 0; z < duelMatches.length; z++) {
-                if (
-                  duelMatches[z].localTeam?.id == a.id &&
-                  Number(duelMatches[z].localTeamGoals) >
-                  Number(duelMatches[z].awayTeamGoals)
-                ) {
-                  aWin++
-                  goalDifference +=
-                    Number(duelMatches[z].localTeamGoals) -
-                    Number(duelMatches[z].awayTeamGoals)
-                } else if (
-                  duelMatches[z].awayTeam?.id == a.id &&
-                  Number(duelMatches[z].awayTeamGoals) >
-                  Number(duelMatches[z].localTeamGoals)
-                ) {
-                  aWin++
-                  goalDifference +=
-                    Number(duelMatches[z].awayTeamGoals) -
-                    Number(duelMatches[z].localTeamGoals)
-                } else if (
-                  duelMatches[z].localTeam?.id == a.id &&
-                  Number(duelMatches[z].localTeamGoals) ==
-                  Number(duelMatches[z].awayTeamGoals)
-                ) {
-                  aDraw++
-                } else if (
-                  duelMatches[z].awayTeam?.id == a.id &&
-                  Number(duelMatches[z].awayTeamGoals) ==
-                  Number(duelMatches[z].localTeamGoals)
-                ) {
-                  aDraw++
-                } else if (
-                  duelMatches[z].localTeam?.id == a.id &&
-                  Number(duelMatches[z].localTeamGoals) <
-                  Number(duelMatches[z].awayTeamGoals)
-                ) {
-                  aLose++
-                  goalDifference +=
-                    Number(duelMatches[z].localTeamGoals) -
-                    Number(duelMatches[z].awayTeamGoals)
-                } else if (
-                  duelMatches[z].awayTeam?.id == a.id &&
-                  Number(duelMatches[z].awayTeamGoals) <
-                  Number(duelMatches[z].localTeamGoals)
-                ) {
-                  aLose++
-                  goalDifference +=
-                    Number(duelMatches[z].awayTeamGoals) -
-                    Number(duelMatches[z].localTeamGoals)
-                }
-              }
-              //si se han jugado los 2 partidos entre ellos
-              if (duelMatches.length == 2) {
-                if (aWin == 2 || (aWin == 1 && aDraw == 1)) {
-                  return 1
-                } else if (aLose == 2 || (aLose == 1 && aDraw == 1)) {
-                  return -1
-                }
-                //si es igual, buscar diferencia de goles individual (no cuenta doble fuera de casa)
-                else {
-                  if (goalDifference > 0) {
-                    return 1
-                  } else {
-                    return -1
-                  }
-                }
-              }
-              //si solo se ha jugado 1
-              else if (duelMatches.length == 1) {
-                if (aWin == 1) {
-                  return 1
-                } else if (aLose == 1) {
-                  return -1
-                }
-              }
-            }
-            //si el goal average particular es igual pasa a hacer lo siguiente:
-            //si la diferencia de goles entre los dos equipos es igual en ambos
-            else if (
-              a.stats.goals - a.stats.againstGoals ===
-              b.stats.goals - b.stats.againstGoals
-            ) {
-              //devuelve 0
-              return 0
-            }
-            //si los puntos de los equipos son iguales y la diferencia de goles es distinta
-            //devuelve +1 o -1 según quien tenga más goles
-            return a.stats.goals - a.stats.againstGoals >
-              b.stats.goals - b.stats.againstGoals
-              ? 1
-              : -1
+        JSON.stringify(
+          orderTeams.sort(function (b: ITeam, a: ITeam) {
+          return (a.stats?.goalDif ?? 0) - (b.stats?.goalDif ?? 0)
           })
-          roundRankings.push(roundRanking)
-        }
-        return roundRankings
-      } else {
-        return []
-      }
-    },
-    teamMatchesPerRound: (state) => (id: number) => {
-      if (state.competition.teams && state.rounds && state.rounds.length != 0) {
-        let teamMatchesPerRound = []
-        for (let r = 0; r < state.rounds.length; r++) {
-          let found = false
-          let m = 0
-          while (state.rounds[r].matches != null && m < state.rounds[r].matches.length && !found) {
-            let match: Match = state.rounds[r].matches[m]
-            if (match.localTeam?.id == id || match.awayTeam?.id == id) {
-              teamMatchesPerRound.push(match)
-              found = true
-            }
-            m++
-          }
-        }
-        return teamMatchesPerRound
-      } else {
-        return []
-      }
-    },
-    teamsNotPlayedThisRound: (state:any, getters:any) => (selectedRound:any) => {
-      if (state.competition.teams && state.rounds && state.rounds.length != 0) {
-        let teamsPlayed = []
-        for (const match of getters.round(selectedRound).matches) {
-          teamsPlayed.push(match.localTeam)
-          teamsPlayed.push(match.awayTeam)
-        }
-        let teamsNotPlayed = state.competition.teams.filter(
-          (a:ITeam) => !teamsPlayed.some((b) => a.id == b.id)
         )
-        return teamsNotPlayed
-      } else {
-        return []
-      }
-    }
+      )
+    },
+    // statsPerRound: (state: any): any[] => {
+    //   if (state.competition.teams && state.rounds && state.rounds.length != 0) {
+    //     let teams = [...state.competition.teams]
+    //     let roundRankings = []
+    //     for (let r = 0; r < state.rounds.length; r++) {
+    //       let roundRanking = { ...state.rounds[r] }
+    //       let updatedTeams = []
+    //       // sumar todas las jornadas hasta la seleccionada
+    //       for (let i = 0; i < teams.length; i++) {
+    //         let updatedTeam = { ...teams[i] }
+    //         let teamStats = {
+    //           gamesPlayed: 0,
+    //           homeGamesPlayed: 0,
+    //           awayGamesPlayed: 0,
+    //           points: 0,
+    //           homePoints: 0,
+    //           awayPoints: 0,
+    //           wins: 0,
+    //           homeWins: 0,
+    //           awayWins: 0,
+    //           draws: 0,
+    //           homeDraws: 0,
+    //           awayDraws: 0,
+    //           loses: 0,
+    //           homeLoses: 0,
+    //           awayLoses: 0,
+    //           goals: 0,
+    //           homeGoals: 0,
+    //           awayGoals: 0,
+    //           againstGoals: 0,
+    //           homeAgainstGoals: 0,
+    //           awayAgainstGoals: 0
+    //         }
+    //         let actualRound = r + 1
+    //         for (let j = 0; j < actualRound; j++) {
+    //           let matches = state.rounds[j].matches
+    //           let x = 0
+    //           let found = false
+    //           while (x < matches.length && !found) {
+    //             if (matches[x].localTeam.id == teams[i].id) {
+    //               teamStats.gamesPlayed += 1
+    //               teamStats.homeGamesPlayed += 1
+    //               teamStats.goals += Number(matches[x].localTeamGoals)
+    //               teamStats.homeGoals += Number(matches[x].localTeamGoals)
+    //               teamStats.againstGoals += Number(matches[x].awayTeamGoals)
+    //               teamStats.homeAgainstGoals += Number(matches[x].awayTeamGoals)
+    //               if (
+    //                 Number(matches[x].localTeamGoals) >
+    //                 Number(matches[x].awayTeamGoals)
+    //               ) {
+    //                 teamStats.homePoints += 3
+    //                 teamStats.points += 3
+    //                 teamStats.wins += 1
+    //                 teamStats.homeWins += 1
+    //               } else if (
+    //                 Number(matches[x].localTeamGoals) ==
+    //                 Number(matches[x].awayTeamGoals)
+    //               ) {
+    //                 teamStats.homePoints += 1
+    //                 teamStats.points += 1
+    //                 teamStats.draws += 1
+    //                 teamStats.homeDraws += 1
+    //               } else if (
+    //                 Number(matches[x].localTeamGoals) <
+    //                 Number(matches[x].awayTeamGoals)
+    //               ) {
+    //                 teamStats.homePoints += 0
+    //                 teamStats.points += 0
+    //                 teamStats.loses += 1
+    //                 teamStats.homeLoses += 1
+    //               }
+    //               found = true
+    //             } else if (matches[x].awayTeam.id == teams[i].id) {
+    //               teamStats.gamesPlayed += 1
+    //               teamStats.awayGamesPlayed += 1
+    //               teamStats.goals += Number(matches[x].awayTeamGoals)
+    //               teamStats.awayGoals += Number(matches[x].awayTeamGoals)
+    //               teamStats.againstGoals += Number(matches[x].localTeamGoals)
+    //               teamStats.awayAgainstGoals += Number(
+    //                 matches[x].localTeamGoals
+    //               )
+    //               if (
+    //                 Number(matches[x].awayTeamGoals) >
+    //                 Number(matches[x].localTeamGoals)
+    //               ) {
+    //                 teamStats.awayPoints += 3
+    //                 teamStats.points += 3
+    //                 teamStats.wins += 1
+    //                 teamStats.awayWins += 1
+    //               } else if (
+    //                 Number(matches[x].awayTeamGoals) ==
+    //                 Number(matches[x].localTeamGoals)
+    //               ) {
+    //                 teamStats.awayPoints += 1
+    //                 teamStats.points += 1
+    //                 teamStats.draws += 1
+    //                 teamStats.awayDraws += 1
+    //               } else if (
+    //                 Number(matches[x].awayTeamGoals) <
+    //                 Number(matches[x].localTeamGoals)
+    //               ) {
+    //                 teamStats.awayPoints += 0
+    //                 teamStats.points += 0
+    //                 teamStats.loses += 1
+    //                 teamStats.awayLoses += 1
+    //               }
+    //               found = true
+    //             }
+    //             x++
+    //           }
+    //         }
+    //         updatedTeam.stats = teamStats
+    //         updatedTeams.push(updatedTeam)
+    //       }
+    //       // esto ordena primero por puntos y luego por diferencia de goles
+    //       roundRanking.ranking = updatedTeams.sort(function (b, a) {
+    //         //si los puntos de los dos equipos son distintos
+    //         if (a.stats.points !== b.stats.points) {
+    //           //devuelve positivo (+) o negativo (-) según quien tenga más
+    //           return a.stats.points - b.stats.points
+    //         }
+    //         //si los puntos son iguales pasa a hacer lo siguiente:
+    //         else if (a.stats.points == b.stats.points) {
+    //           let matches: Match[] = []
+    //           //coger todos los partidos
+    //           for (let x = 0; x < state.rounds.length; x++) {
+    //             matches = [...matches, ...state.rounds[x].matches]
+    //           }
+    //           let duelMatches = []
+    //           //buscar los partidos que esos 2 equipos hayan jugado entre ellos
+    //           for (let y = 0; y < matches.length; y++) {
+    //             if (
+    //               (matches[y] && matches[y].localTeam && matches[y].awayTeam &&
+    //                 matches[y].localTeam?.id === a.id &&
+    //                 matches[y].awayTeam?.id === b.id) ||
+    //               (matches[y] && matches[y].localTeam && matches[y].awayTeam &&
+    //                 matches[y].localTeam?.id === b.id &&
+    //                 matches[y].awayTeam?.id === a.id)
+    //             ) {
+    //               duelMatches.push(matches[y])
+    //             }
+    //           }
+    //           //buscar diferencia de victorias/empates/derrotas
+    //           let aWin = 0
+    //           let aDraw = 0
+    //           let aLose = 0
+    //           let goalDifference = 0
+    //           for (let z = 0; z < duelMatches.length; z++) {
+    //             if (
+    //               duelMatches[z].localTeam?.id == a.id &&
+    //               Number(duelMatches[z].localTeamGoals) >
+    //               Number(duelMatches[z].awayTeamGoals)
+    //             ) {
+    //               aWin++
+    //               goalDifference +=
+    //                 Number(duelMatches[z].localTeamGoals) -
+    //                 Number(duelMatches[z].awayTeamGoals)
+    //             } else if (
+    //               duelMatches[z].awayTeam?.id == a.id &&
+    //               Number(duelMatches[z].awayTeamGoals) >
+    //               Number(duelMatches[z].localTeamGoals)
+    //             ) {
+    //               aWin++
+    //               goalDifference +=
+    //                 Number(duelMatches[z].awayTeamGoals) -
+    //                 Number(duelMatches[z].localTeamGoals)
+    //             } else if (
+    //               duelMatches[z].localTeam?.id == a.id &&
+    //               Number(duelMatches[z].localTeamGoals) ==
+    //               Number(duelMatches[z].awayTeamGoals)
+    //             ) {
+    //               aDraw++
+    //             } else if (
+    //               duelMatches[z].awayTeam?.id == a.id &&
+    //               Number(duelMatches[z].awayTeamGoals) ==
+    //               Number(duelMatches[z].localTeamGoals)
+    //             ) {
+    //               aDraw++
+    //             } else if (
+    //               duelMatches[z].localTeam?.id == a.id &&
+    //               Number(duelMatches[z].localTeamGoals) <
+    //               Number(duelMatches[z].awayTeamGoals)
+    //             ) {
+    //               aLose++
+    //               goalDifference +=
+    //                 Number(duelMatches[z].localTeamGoals) -
+    //                 Number(duelMatches[z].awayTeamGoals)
+    //             } else if (
+    //               duelMatches[z].awayTeam?.id == a.id &&
+    //               Number(duelMatches[z].awayTeamGoals) <
+    //               Number(duelMatches[z].localTeamGoals)
+    //             ) {
+    //               aLose++
+    //               goalDifference +=
+    //                 Number(duelMatches[z].awayTeamGoals) -
+    //                 Number(duelMatches[z].localTeamGoals)
+    //             }
+    //           }
+    //           //si se han jugado los 2 partidos entre ellos
+    //           if (duelMatches.length == 2) {
+    //             if (aWin == 2 || (aWin == 1 && aDraw == 1)) {
+    //               return 1
+    //             } else if (aLose == 2 || (aLose == 1 && aDraw == 1)) {
+    //               return -1
+    //             }
+    //             //si es igual, buscar diferencia de goles individual (no cuenta doble fuera de casa)
+    //             else {
+    //               if (goalDifference > 0) {
+    //                 return 1
+    //               } else {
+    //                 return -1
+    //               }
+    //             }
+    //           }
+    //           //si solo se ha jugado 1
+    //           else if (duelMatches.length == 1) {
+    //             if (aWin == 1) {
+    //               return 1
+    //             } else if (aLose == 1) {
+    //               return -1
+    //             }
+    //           }
+    //         }
+    //         //si el goal average particular es igual pasa a hacer lo siguiente:
+    //         //si la diferencia de goles entre los dos equipos es igual en ambos
+    //         else if (
+    //           a.stats.goals - a.stats.againstGoals ===
+    //           b.stats.goals - b.stats.againstGoals
+    //         ) {
+    //           //devuelve 0
+    //           return 0
+    //         }
+    //         //si los puntos de los equipos son iguales y la diferencia de goles es distinta
+    //         //devuelve +1 o -1 según quien tenga más goles
+    //         return a.stats.goals - a.stats.againstGoals >
+    //           b.stats.goals - b.stats.againstGoals
+    //           ? 1
+    //           : -1
+    //       })
+    //       roundRankings.push(roundRanking)
+    //     }
+    //     return roundRankings
+    //   } else {
+    //     return []
+    //   }
+    // },
+    // teamMatchesPerRound: (state) => (id: number) => {
+    //   if (state.competition.teams && state.rounds && state.rounds.length != 0) {
+    //     let teamMatchesPerRound = []
+    //     for (let r = 0; r < state.rounds.length; r++) {
+    //       let found = false
+    //       let m = 0
+    //       while (state.rounds[r].matches != null && m < state.rounds[r].matches.length && !found) {
+    //         let match: Match = state.rounds[r].matches[m]
+    //         if (match.localTeam?.id == id || match.awayTeam?.id == id) {
+    //           teamMatchesPerRound.push(match)
+    //           found = true
+    //         }
+    //         m++
+    //       }
+    //     }
+    //     return teamMatchesPerRound
+    //   } else {
+    //     return []
+    //   }
+    // },
+    // teamsNotPlayedThisRound: (state:any, getters:any) => (selectedRound:any) => {
+    //   if (state.competition.teams && state.rounds && state.rounds.length != 0) {
+    //     let teamsPlayed = []
+    //     for (const match of getters.round(selectedRound).matches) {
+    //       teamsPlayed.push(match.localTeam)
+    //       teamsPlayed.push(match.awayTeam)
+    //     }
+    //     let teamsNotPlayed = state.competition.teams.filter(
+    //       (a:ITeam) => !teamsPlayed.some((b) => a.id == b.id)
+    //     )
+    //     return teamsNotPlayed
+    //   } else {
+    //     return []
+    //   }
+    // }
   },
   actions: {
     ...competitionActions,
   }
 })
+

@@ -4,11 +4,15 @@ import { defineStore } from 'pinia'
 export const useRootStore = defineStore('root', {
   state: () => ({
     toast: { severity: 'success', summary: 'Logueado correctamente', life: 3000 },
-    theme: window.localStorage.getItem('theme')
+    theme: window.localStorage.getItem('theme'),
+    displayMenu: true
   }),
   getters: {
   },
   actions: {
-    // ...rootMutations
+    toggleMenu() {
+      console.log(this.displayMenu)
+      this.displayMenu = !this.displayMenu
+    }
   }
 })

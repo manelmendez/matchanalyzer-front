@@ -2,7 +2,7 @@
   <div>
     <Menu :model="myCompetitions" class="competition-menu">
       <template #item="{ item }">
-        <div class="item" @click="router.push({name: 'competitions-id', params: {id: item.id}})">
+        <div class="item" @click="router.push({name: 'summary', params: {id: item.id, roundId: 'latest'}})">
           <a v-ripple class="flex items-center">
             <span>{{ item.name }}</span>
             <div style="margin-left: auto;">

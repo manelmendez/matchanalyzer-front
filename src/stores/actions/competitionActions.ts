@@ -3,7 +3,7 @@ import { useCompetitionStore } from "../../stores/store";
 
 // COMPETITION
 export const competitionActions = {
-  addCompetition(body) {
+  addCompetition(body: any) {
     console.log('ACTION -- addCompetition')
     const competitionStore = useCompetitionStore()
     return axios
@@ -16,7 +16,7 @@ export const competitionActions = {
         return err.response
       })
   },
-  getCompetition(id) {
+  getCompetition(id: number) {
     console.log('ACTION -- getCompetition')
     const competitionStore = useCompetitionStore()
     return axios.get('competitions/' + id).then((response) => {
@@ -30,7 +30,7 @@ export const competitionActions = {
       competitionStore.competitions = response.data.competitions
     })
   },
-  updateCompetition(data) {
+  updateCompetition(data: any) {
     console.log('ACTION -- updateCompetition')
     const competitionStore = useCompetitionStore()
     return axios
@@ -39,14 +39,16 @@ export const competitionActions = {
         let previousCompetition = competitionStore.competitions.find(
               (a) => a.id === response.data.id
             )
-            Object.assign(previousCompetition, response.data)
+            if (previousCompetition && response.data) {
+              Object.assign(previousCompetition, response.data)
+            }
         return response
       })
       .catch((err) => {
         return err.response
       })
   },
-  deleteCompetition(data) {
+  deleteCompetition(data: any) {
     console.log('ACTION -- deleteCompetition')
     const competitionStore = useCompetitionStore()
     return axios
@@ -62,7 +64,7 @@ export const competitionActions = {
   },
 
   // ROUND
-  addRound(body) {
+  addRound(body: any) {
     console.log('ACTION -- addRound')
     const competitionStore = useCompetitionStore()
     return axios
@@ -76,17 +78,17 @@ export const competitionActions = {
         return err.response
       })
   },
-  getCompetitionRounds(id) {
+  getCompetitionRounds(id: number) {
     console.log('ACTION -- getCompetitionRounds')
     const competitionStore = useCompetitionStore()
     return axios.get('rounds/competition/' + id).then((response) => {
-      if (competitionStore.selectedRound == null) {
+      if (competitionStore.selectedRound == 0) {
         competitionStore.selectedRound = response.data.rounds.length
       }
       competitionStore.rounds = response.data.rounds
     })
   },
-  deleteRound(id) {
+  deleteRound(id: number) {
     console.log('ACTION -- deleteRound')
     const competitionStore = useCompetitionStore()
     return axios
@@ -102,7 +104,7 @@ export const competitionActions = {
   },
 
   // MATCH
-  getMatch(id) {
+  getMatch(id: number) {
     console.log('ACTION -- getMatch')
     const competitionStore = useCompetitionStore()
     return axios.get('matches/' + id).then((response) => {

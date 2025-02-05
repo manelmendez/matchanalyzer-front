@@ -1,11 +1,14 @@
 <template>
-  <Menu :model="items" class="sidebar-menu" />
+  <Menu :model="items" class="sidebar-menu max-sm:!h-min max-sm:w-full max-sm:mx-auto" :style="displayMenu ? '' : 'display:none'" />
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
+import { useRootStore } from "@/stores/store";
 const router = useRouter();
+const rootStore = useRootStore()
+const displayMenu = computed(() => rootStore.displayMenu)
 
 const items = ref([
   { label: 'Inicio', icon: 'pi pi-fw pi-home', command: () => {router.push('/')}},

@@ -2,35 +2,26 @@
   <Card class="myteam-header">
     <template #content>
       <Tag style="border: 2px solid var(--p-primary-color); color: var(--text-color); ">
-            <Image :src="constants.ADDRESS + avatar" @error="avatar = constants.DEFAULT_TEAM_URL" width="25" style="margin-right: .5em;" />
+            <Image :src="constants.ADDRESS + avatar" :error="avatar = constants.DEFAULT_TEAM_URL" width="25" style="margin-right: .5em;" />
             <span>{{ myTeam?.name }}</span>
       </Tag>
       <Button label="Ir a la competición" icon="pi pi-chevron-right" iconPos="right" rounded />
     </template>
   </Card>
-  <div class="myteam-content md:grid-cols-1 md:grid-flow-row-dense">
-    <div class="myteam-charts" v-if="pichichiList || cardList">
-      <Card v-if="pichichiList">
-        <template #content>
-          <Chart type="line" :data="pichichiList" :options="pichichiOptions" />
-        </template>
-      </Card>
-      <Card v-if="cardList">
-        <template #content>
-          <Chart type="line" :data="cardList" :options="cardOptions" />
-        </template>
-      </Card>
-    </div>
+  <div class="myteam-content lg:grid-cols-2 md:grid-flow-row-dense">
     <div class="myteam-players">
-      <DataTable :value="myTeam?.players" style=" border-radius: 0.6em">
+      <DataTable :value="myTeam?.players" style=" border-radius: 0.6em" size="small" columnResizeMode="fit">
         <Column>
           <template #body="{ data }">
             <Avatar class="menu-avatar" :label="initials(data)" shape="circle" aria-haspopup="true" aria-controls="overlay_menu"
               style="background-color: var(--p-primary-color); cursor: pointer;" />
           </template>
         </Column>
-        <Column field="firstname" header="Nombre" sortable></Column>
-        <Column field="lastname" header="Apellido" sortable></Column>
+        <Column field="firstname" header="Nombre" sortable>
+          <template #body="{ data }">
+            {{ data.firstname + ' ' + data.lastname }}
+          </template>
+        </Column>
         <Column field="position" header="Posición" sortable></Column>
         <Column field="year" header="Año" sortable></Column>
         <Column>
@@ -43,6 +34,20 @@
           <div class="center-h">No hay jugadores en este equipo :(</div>
         </template>
       </DataTable>
+    </div>
+    <div class="myteam-charts" v-if="pichichiList || cardList">
+      <Card v-if="pichichiList">
+        <template #content>
+          <div>
+            <Chart type="line" :data="pichichiList" :options="pichichiOptions" class="w-full min-h-[20rem]"/>
+          </div>
+        </template>
+      </Card>
+      <Card v-if="cardList">
+        <template #content>
+          <Chart type="line" :data="cardList" :options="cardOptions" class="w-full min-h-[20rem]"/>
+        </template>
+      </Card>
     </div>
   </div>
 </template>
@@ -216,6 +221,7 @@ export default {
 
     const pichichiOptions = ref({
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         title: {
         display: true,
@@ -246,6 +252,7 @@ export default {
     })
     const cardOptions = ref({
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         title: {
           display: true,
@@ -311,31 +318,15 @@ export default {
 }
 .myteam-content {
   display: grid;
-  /* grid-template-columns: 1fr 2fr; */
   gap: 2em
 }
-/* @media (max-width: 1280px) and (min-width: 1081px) {
-  .myteam-content {
-    grid-template-columns: none;
-    grid-template-rows: auto;
-  }
-  .myteam-charts {
-    grid-template-rows: none !important;
-    grid-template-columns: 1fr 1fr;
-  }
-}
-@media (max-width: 1080px) {
-  .myteam-charts {
-    grid-template-rows: auto;
-    grid-template-columns: none;
-  }
-} */
+
 .myteam-charts {
   display: grid;
-  /* grid-template-rows: 1fr 1fr; */
   gap: 2em;
   height: fit-content;
 }
+
 .p-datatable-table-container {
   border-radius: 0.6em;
 }

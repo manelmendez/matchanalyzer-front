@@ -39,10 +39,30 @@ const router = createRouter({
             meta: { requiresAuth: true }
           },
           {
-            path: '/competitions/:id',
+            path: '/competitions/:id/round/:roundId/',
             name: 'competitions-id',
-            component: () => import('@/views/competitions/_id/_id.vue'),
-            meta: { requiresAuth: true }
+            component: () => import('@/views/competitions/_id/index.vue'),
+            meta: { requiresAuth: true },
+            children: [
+              {
+                path: 'summary',
+                name: 'summary',
+                component: () => import('@/views/competitions/_id/Summary.vue'),
+                meta: { requiresAuth: true, layout: 'default' }
+              },
+              {
+                path: 'results',
+                name: 'results',
+                component: () => import('@/views/competitions/_id/Results.vue'),
+                meta: { requiresAuth: true, layout: 'default' }
+              },
+              {
+                path: 'rankings',
+                name: 'rankings',
+                component: () => import('@/views/competitions/_id/Classification.vue'),
+                meta: { requiresAuth: true, layout: 'default' }
+              }
+            ]
           },
           // {
           //   path: '/teams',

@@ -1,7 +1,7 @@
 <template>
   <Toolbar class="app-toolbar">
       <template #start>
-        <Button icon="pi pi-bars" class="mr-2" severity="secondary" text />
+        <Button icon="pi pi-bars" class="mr-2" severity="secondary" text @click="displayMenu"/>
         <span>MATCHANALYZER</span>
       </template>
 
@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { ref, computed } from 'vue'
-import { useUserStore } from '@/stores/store'
+import { useUserStore, useRootStore } from '@/stores/store'
 import { IUser } from '@/models/user';
 import { onMounted } from 'vue';
 
@@ -29,12 +29,17 @@ export default {
   setup() {
     const isDarkTheme = ref(window.localStorage.getItem('dark') == "true" ? true : false)
     const userStore = useUserStore()
+    const rootStore = useRootStore()
     const user = computed<IUser>(() => userStore.user)
     const menu = ref();
     const menuItems = ref([
       { label: "Perfil", command: () => { /* handle profile click */ } },
       { label: "Logout", command: () => { /* handle logout click */ } }
     ])
+
+    const displayMenu = () => {
+      rootStore.toggleMenu()
+    }
 
     const toggle = (event:any) => {
       menu.value.toggle(event);
@@ -75,7 +80,8 @@ export default {
       menu,
       toggle,
       initials,
-      iconSelect
+      iconSelect,
+      displayMenu
     }
   }
 }

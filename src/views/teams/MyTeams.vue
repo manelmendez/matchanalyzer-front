@@ -6,7 +6,7 @@
           <a v-ripple class="flex items-center">
             <!-- <span :class="item.icon" /> -->
             <Image style="margin-right: 1em;" :src="constants.ADDRESS + item.avatar"
-              @error="item.avatar = constants.DEFAULT_TEAM_URL" width="30"/>
+              :error="item.avatar = constants.DEFAULT_TEAM_URL" width="30"/>
             <span>{{ item.name }}</span>
             <div style="margin-left: auto;">
               <Button icon="pi pi-pencil" severity="info" variant="text" rounded @click.stop="updatingTeam = item.id,dialog = true"/>

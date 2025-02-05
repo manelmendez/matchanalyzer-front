@@ -5,20 +5,20 @@
       <div class="carousel-content">
         <div class="carousel-item">
           <h3 class="title">Líder</h3>
-            <img
+            <Image
               :src="constants.ADDRESS + slotProps.data.teams[0].avatar"
-              @error="slotProps.data.teams[0].avatar = constants.DEFAULT_TEAM_URL"
+              :error="slotProps.data.teams[0].avatar = constants.DEFAULT_TEAM_URL"
               :width="35">
-            </img>
+            </Image>
             <p>{{ slotProps.data.teams[0].name }}</p>
         </div>
         <div class="carousel-item">
           <h3>Último</h3>
-          <img
+          <Image
             :src="constants.ADDRESS + slotProps.data.teams[slotProps.data.teams.length -1].avatar"
-            @error="slotProps.data.teams[slotProps.data.teams.length -1].avatar = constants.DEFAULT_TEAM_URL"
+            :error="slotProps.data.teams[slotProps.data.teams.length -1].avatar = constants.DEFAULT_TEAM_URL"
             :width="35">
-          </img>
+          </Image>
           <p>{{ slotProps.data.teams[slotProps.data.teams.length -1].name }}</p>
         </div>
         <div class="carousel-item">
