@@ -11,12 +11,15 @@ import App from './App.vue'
 import router from './router'
 import { pinia, useUserStore } from './stores/store'
 import axiosInstance from './assets/axios'
+import { Emerald, Indigo, Red, Lime, Amber, Teal, Cyan, Sky, Stone } from './assets/themes'
 
 const app = createApp(App)
+const theme = window.localStorage.getItem('theme') || Emerald
 
 app.use(PrimeVue, {
   theme: {
-    preset: Aura,
+    preset: theme=="Emerald"?Emerald:theme=="Indigo"?Indigo:theme=="Red"?Red:theme=="Lime"?Lime:
+    theme=="Amber"?Amber:theme=="Teal"?Teal:theme=="Cyan"?Cyan:theme=="Sky"?Sky:Stone,
     options: {
       cssLayer: {
         name: "primevue",

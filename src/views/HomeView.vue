@@ -1,5 +1,5 @@
 <template>
-  <Card>
+  <Card class="carousel">
     <template #title>
       Equipos <Badge :value="myTeams.length" size="small" style="margin-left: 0.5em;" />
     </template>
@@ -7,7 +7,7 @@
       <TeamCarousel></TeamCarousel>
     </template>
   </Card>
-  <Card>
+  <Card class="carousel">
     <template #title>
       Competiciones <Badge :value="competitions.length" size="small" style="margin-left: 0.5em;" />
     </template>
@@ -65,11 +65,11 @@ export default {
 }
 </script>
 <style>
-.p-card {
+.carousel.p-card {
   box-shadow: none;
 }
 
-.p-card-title {
+.carousel .p-card-title {
   display: grid;
   grid-auto-flow: column;
   justify-content: center;

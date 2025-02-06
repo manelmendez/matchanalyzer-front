@@ -8,9 +8,9 @@
         <template #content >
           <Menu :model="localMostTrashed.slice(0, 4)"
           style="background-color: var(--p-primary-500);color: var(--p-text-color);"
-          class="border-0 gap-2">
+          class="border-0 gap-2 stats-menu">
             <template #item="{ item }">
-              <div class="py-2">
+              <div class="py-2 text-white">
                 <a v-ripple class="flex items-center">
                   <!-- <span :class="item.icon" /> -->
                   <Image style="margin-right: 1em;" :src="constants.ADDRESS + item.avatar"
@@ -50,11 +50,26 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .v-sheet--offset {
   top: -3em;
   position: relative;
   z-index: 1;
   min-height: calc(100% - 32px);
+}
+
+.stats-menu .p-menu-item-content:hover {
+  background-color: transparent;
+  color: white;
+}
+
+.stats-menu .p-menu-item-content:focus {
+  background-color: transparent;
+  color: white;
+}
+
+.stats-menu .p-menu-item.p-focus .p-menu-item-content {
+  background-color: transparent;
+  color: white;
 }
 </style>

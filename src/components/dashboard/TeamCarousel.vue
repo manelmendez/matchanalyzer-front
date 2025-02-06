@@ -53,7 +53,7 @@ import { useUserStore, useTeamStore } from '@/stores/store'
 import constants from '@/assets/constants/constants'
 import { ITeam } from '@/models/team';
 export default {
-  name: 'CompetitionCarousel',
+  name: 'TeamCarousel',
   props: {
   },
   setup() {
@@ -121,12 +121,14 @@ export default {
 @media (max-width: 1280px) {
   .carousel-content {
     grid-template-columns: repeat(2, 1fr);
+    gap: 2em;
   }
 }
 
 @media (max-width: 1080px) {
   .carousel-content {
     grid-template-columns: repeat(1, 1fr);
+    gap: 2em;
   }
 }
 

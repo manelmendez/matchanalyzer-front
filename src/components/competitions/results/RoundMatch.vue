@@ -1,7 +1,7 @@
 <template>
-  <div class="grid grid-cols-7 max-lg:grid-cols-5 gap-8 max-lg:gap-2">
+  <div class="grid grid-cols-7 max-lg:grid-cols-5 gap-2 max-lg:gap-2">
     <Card class="border-1 text-center col-span-2 col-start-2 max-lg:col-start-1 max-lg:h-25" 
-    :class="match.localTeamGoals>match.awayTeamGoals ? 'bg-green-500 border-green-600':'bg-red-500 border-red-600'">
+    :class="match.localTeamGoals>match.awayTeamGoals ? 'bg-emerald-400 border-emerald-800':'bg-rose-400  border-rose-800'">
       <template #content>
         <div class="grid justify-center max-lg:text-sm">
           <Image :src="constants.ADDRESS + match.localTeam.avatar"
@@ -16,7 +16,7 @@
       </template>
     </Card>
     <Card class="border-1 text-center col-span-2 max-lg:h-25"
-    :class="match.awayTeamGoals>match.localTeamGoals ? 'bg-green-500 border-green-600':'bg-red-500 border-red-600'">
+    :class="match.awayTeamGoals>match.localTeamGoals ? 'bg-emerald-400 border-emerald-800':'bg-rose-400 border-rose-800'">
       <template #content>
         <div class="grid justify-center">
           <Image :src="constants.ADDRESS + match.awayTeam.avatar"

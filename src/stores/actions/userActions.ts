@@ -15,6 +15,7 @@ export const userActions = {
   signIn(credentials: any) {
     const userStore = useUserStore()
     console.log('ACTION -- signIn')
+    console.log(credentials)
     return axios
       .post('users/signin', {}, { auth: credentials })
       .then((response) => {
@@ -28,6 +29,7 @@ export const userActions = {
           'Bearer ' + response.data.token
         window.localStorage.setItem('authUser', JSON.stringify(authUser))
         userStore.user = { ...authUser }
+        userStore.isLogged = true
         return response
       })
   },

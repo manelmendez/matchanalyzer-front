@@ -2,28 +2,37 @@
   <Toolbar class="app-toolbar">
       <template #start>
         <Button icon="pi pi-bars" class="mr-2" severity="secondary" text @click="displayMenu"/>
-        <span>MATCHANALYZER</span>
+        <span class="cursor-pointer" @click="router.push('/')">MATCHANALYZER</span>
       </template>
 
       <template #center>
       </template>
 
       <template #end>
+        <Button type="button" @click="toggleTheme" size="small" rounded variant="outlined" 
+          icon="pi pi-palette" class="mr-4" />
+        <Menu class="theme-menu" ref="menuTheme" :model="menuThemeItems" :popup="true">
+          <template #item="{ item }">
+            <Avatar label="" :style="'background-color:'+ item.color" shape="circle" @click="changeTheme(item.label,item.preset)" />
+          </template>
+        </Menu>
         <Button type="button" @click="toggleDarkMode" size="small" rounded variant="outlined" 
           :icon="iconSelect()" />
-        <Avatar class="menu-avatar" :label="initials()" shape="circle" @click="toggle"
+        <Avatar class="menu-avatar" :label="initials()" shape="circle" @click="toggleUser"
           style="background-color: var(--p-primary-color); cursor: pointer;" />
-        <Menu class="user-menu" ref="menu" id="overlay_menu" :model="menuItems" :popup="true" />
+        <Menu class="user-menu" ref="menuUser" id="overlay_menu" :model="menuUserItems" :popup="true" />
       </template>
     </Toolbar>
 </template>
 
 <script lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useUserStore, useRootStore } from '@/stores/store'
 import { IUser } from '@/models/user';
-import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { usePreset, palette } from '@primevue/themes';
+import { Emerald, Indigo, Red, Lime, Amber, Teal, Cyan, Sky, Stone } from '@/assets/themes'
+
 
 export default {
   name: "AppToolbar",
@@ -33,23 +42,42 @@ export default {
     const userStore = useUserStore()
     const rootStore = useRootStore()
     const user = computed<IUser>(() => userStore.user)
-    const menu = ref();
-    const menuItems = ref([
+    const menuUser = ref();
+    const menuTheme = ref();
+    const menuUserItems = ref([
       { label: "Perfil", command: () => { /* handle profile click */ } },
       { label: "Logout", command: () => { logout() } }
+    ])
+    
+    const menuThemeItems = ref([
+      { label: "Emerald", color: "var(--p-emerald-500)", preset: Emerald },
+      { label: "Indigo", color: "var(--p-indigo-500)", preset: Indigo },
+      { label: "Red", color: "var(--p-red-500)", preset: Red },
+      { label: "Lime", color: "var(--p-lime-500)", preset: Lime },
+      { label: "Amber", color: "var(--p-amber-500)", preset: Amber },
+      { label: "Teal", color: "var(--p-teal-500)", preset: Teal },
+      { label: "Cyan", color: "var(--p-cyan-500)", preset: Cyan },
+      { label: "Sky", color: "var(--p-sky-500)", preset: Sky },
+      { label: "Stone", color: "var(--p-stone-500)", preset: Stone },
     ])
 
     const displayMenu = () => {
       rootStore.toggleMenu()
     }
-
-    const toggle = (event:any) => {
-      menu.value.toggle(event);
+    const toggleUser = (event:any) => {
+      menuUser.value.toggle(event);
+    };
+    const toggleTheme = (event:any) => {
+      menuTheme.value.toggle(event);
     };
     const toggleDarkMode = () => {
       document.documentElement.classList.toggle('my-app-dark')
       isDarkTheme.value = !isDarkTheme.value
       window.localStorage.setItem('dark', isDarkTheme.value.toString())
+    }
+    const changeTheme = (name:any, preset:any) => {
+      usePreset(preset)
+      window.localStorage.setItem('theme', name)
     }
     const initials = () => {
       let initials = ''
@@ -81,18 +109,25 @@ export default {
 
     onMounted(() => {
       setInitialTheme()
+      const p = palette('{emerald}')
+      console.log(p)
     })
 
     return {
       isDarkTheme,
       toggleDarkMode,
       user,
-      menuItems,
-      menu,
-      toggle,
+      menuUserItems,
+      menuThemeItems,
+      menuUser,
+      menuTheme,
+      toggleUser,
+      toggleTheme,
       initials,
       iconSelect,
-      displayMenu
+      displayMenu,
+      router,
+      changeTheme
     }
   }
 }
@@ -117,6 +152,11 @@ export default {
 
 .p-menu.user-menu {
   min-width: 8em;
+}
+.p-menu.theme-menu {
+  min-width: 2.8em;
+  align-items: center;
+  cursor: pointer;
 }
 
 .menu-avatar {

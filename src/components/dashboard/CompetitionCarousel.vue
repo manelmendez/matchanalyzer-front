@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import { useUserStore, useCompetitionStore } from '@/stores/store.ts'
 import constants from '@/assets/constants/constants.ts'
 export default {
@@ -64,11 +64,6 @@ export default {
       return goals
     })
 
-    onMounted(() => {
-      // getInitialData()
-      console.log(constants)
-    })
-
     return {
       user,
       competitions,
@@ -88,12 +83,14 @@ export default {
 @media (max-width: 1280px) {
   .carousel-content {
     grid-template-columns: repeat(2, 1fr);
+    gap: 2em;
   }
 }
 
 @media (max-width: 1080px) {
   .carousel-content {
     grid-template-columns: repeat(1, 1fr);
+    gap: 2em;
   }
 }
 .carousel-item {

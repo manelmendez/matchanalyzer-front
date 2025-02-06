@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { ref, reactive, computed } from "vue";
+import { ref, computed } from "vue";
 import constants from "@/assets/constants/constants";
 import { useUserStore, useCompetitionStore } from "@/stores/store";
 
@@ -46,7 +46,6 @@ export default {
   },
   setup(props, { emit }) {
     const show = props.show
-    const myCompetition = props.myCompetition
     const userStore = useUserStore()
     const competitionStore = useCompetitionStore()
 
@@ -63,7 +62,6 @@ export default {
     const categoryOptionsF11 = ref(constants.categoriesF7)
     
     const onFormSubmit = ({valid}) => {
-      console.log(valid)
       if (valid) {
         let competitionSubmitted = {
           name: name.value,

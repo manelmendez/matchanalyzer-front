@@ -1,17 +1,25 @@
 <template>
   <div class="grid place-content-center w-full h-full" style="background-size: cover;background-image: url('../../public/background3.jpeg');">
     <Card class="w-max" style="background-color: #ffffff70; backdrop-filter: blur(10px);">
-      <template #title>Iniciar Sesión</template>
+      <template #title>Crear nuevo usuario</template>
       <template #content>
-        <Form :initialValues :resolver @submit="onFormSubmit" class="w-100">
+        <Form @submit="onFormSubmit" class="w-100">
           <div class="grid gap-4">
             <div class="w-full grid gap-4">
-              <FormField v-slot="$field" name="email" initialValue="" :resolver="customEmailResolver">
-                  <InputText type="text" placeholder="Email" fluid />
+              <FormField v-slot="$field" name="firstname" :resolver="customNameResolver">
+                  <InputText type="text" placeholder="Nombre" fluid v-model="firstname"/>
                   <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{ $field.error?.message }}</Message>
               </FormField>
-              <FormField v-slot="$field" name="password" initialValue="" :resolver="customPasswordResolver">
-                  <Password type="text" placeholder="Password" :feedback="false" toggleMask fluid />
+              <FormField v-slot="$field" name="lastname" :resolver="customNameResolver">
+                  <InputText type="text" placeholder="Apellido" fluid v-model="lastname"/>
+                  <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{ $field.error?.message }}</Message>
+              </FormField>
+              <FormField v-slot="$field" name="email" :resolver="customEmailResolver">
+                  <InputText type="text" placeholder="Email" fluid v-model="email"/>
+                  <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{ $field.error?.message }}</Message>
+              </FormField>
+              <FormField v-slot="$field" name="password" :resolver="customPasswordResolver">
+                  <Password type="text" placeholder="Password" :feedback="false" toggleMask fluid v-model="password"/>
                   <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{ $field.error?.message }}</Message>
               </FormField>
             </div>
@@ -20,10 +28,10 @@
                 variant="text"
                 severity="info"
                 style="margin-right: 1em"
-                @click="router.push('register')"
-                label="Si aún no tienes cuenta"
+                @click="router.push('login')"
+                label="Si ya tienes cuenta"
               />
-              <Button type="submit" severity="primary" label="Iniciar sesión" />
+              <Button type="submit" severity="primary" label="Crear usuario" />
             </div>
           </div>
         </Form>
@@ -34,37 +42,61 @@
 
 <script>
 import { useUserStore } from '@/stores/store'
-import { reactive } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 export default {
-  name: 'Login2',
+  name: 'Login',
   setup() {
     const router = useRouter()
-    const initialValues = reactive({
-        email: '',
-        password: ''
-    });
+
+    const firstname = ref(null)
+    const lastname = ref(null)
+    const email = ref(null)
+    const password = ref(null)
+
     const userStore = useUserStore()
 
-    const onFormSubmit = ({states, valid}) => {
+    const onFormSubmit = ({valid}) => {
       if (valid) {
         let credentials = {
-          username: states.email.value,
-          password: states.password.value
+          username: email.value,
+          password: password.value
         }
-        submit(credentials)
+        let body = {
+          firstname: firstname.value,
+          lastname: lastname.value,
+          email: email.value,
+          password: password.value
+        }
+        let data = {
+          body,
+          credentials
+        }
+        submit(data)
       }
     }
 
-    const submit = (credentials) => {
-      userStore.signIn(credentials).then(() => {
+    const submit = (data) => {
+      userStore.signUp(data).then(() => {
         router.push({
-          name: 'dashboard' //si uso path: "/mainpage" el params (props) no funciona -- params: { user: response.data.user } --
+          name: 'dashboard'
         })
       })
     }
 
+    const customNameResolver = ({ name,value }) => {
+      const errors = { [name]: []};      
+      if (!value) {
+          errors[name].push({ type: 'required', message: 'Input is required.' });
+      }
+      if (value?.length < 3) {
+          errors[name].push({ type: 'minimum', message: 'Input must be at least 3 characters long.' });
+      }
+      return {
+          errors
+      };
+    };
     const customEmailResolver = ({ value }) => {
       const errors = { email: []};      
       if (!value) {
@@ -96,11 +128,15 @@ export default {
   
     return {
       submit,
+      customNameResolver,
       customEmailResolver,
       customPasswordResolver,
       onFormSubmit,
-      initialValues,
-      router
+      router,
+      firstname,
+      lastname,
+      email,
+      password
     }
   }
 }
