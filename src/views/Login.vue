@@ -23,7 +23,7 @@
                 @click="router.push('register')"
                 label="Si aún no tienes cuenta"
               />
-              <Button type="submit" severity="primary" label="Iniciar sesión" />
+              <Button class="w-30" type="submit" severity="primary" :label="!loading ? 'Iniciar sesión':''" :icon="loading?'pi pi-spin pi-spinner':''" />
             </div>
           </div>
         </Form>
@@ -34,7 +34,7 @@
 
 <script>
 import { useUserStore } from '@/stores/store'
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 export default {
@@ -46,7 +46,7 @@ export default {
         password: ''
     });
     const userStore = useUserStore()
-
+    const loading = ref(false)
     const onFormSubmit = ({states, valid}) => {
       if (valid) {
         let credentials = {
@@ -57,8 +57,10 @@ export default {
       }
     }
 
-    const submit = (credentials) => {
-      userStore.signIn(credentials).then(() => {
+    const submit = async (credentials) => {
+      loading.value = true
+      await userStore.signIn(credentials).then(() => {
+        loading.value = false
         router.push({
           name: 'dashboard' //si uso path: "/mainpage" el params (props) no funciona -- params: { user: response.data.user } --
         })
@@ -100,7 +102,8 @@ export default {
       customPasswordResolver,
       onFormSubmit,
       initialValues,
-      router
+      router,
+      loading
     }
   }
 }
