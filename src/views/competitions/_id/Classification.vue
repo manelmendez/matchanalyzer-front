@@ -11,9 +11,9 @@
     <div v-else class="grid gap-8">
       <Card>
         <template #content>
-          <div class="grid grid-cols-2 gap-2">
+          <div class="grid grid-cols-1 max-md:justify-items-center md:grid-cols-2 gap-2">
             <Select @change="roundChange" v-model="round" :options="rounds" optionLabel="name" placeholder="Selecciona una ronda" class="w-36" />
-            <div class="flex justify-end gap-4 items-center">
+            <div class="flex max-md:flex-col justify-end gap-4 items-center">
               <div class="flex items-center gap-2">
                 Ver detalles<ToggleSwitch v-model="details" />
               </div>

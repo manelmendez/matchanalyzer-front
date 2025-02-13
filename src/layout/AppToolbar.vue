@@ -10,14 +10,16 @@
 
       <template #end>
         <Button type="button" @click="toggleTheme" size="small" rounded variant="outlined" 
-          icon="pi pi-palette" class="mr-4" />
-        <Menu class="theme-menu" ref="menuTheme" :model="menuThemeItems" :popup="true">
+          icon="pi pi-palette"/>
+        <Menu class="theme-menu" ref="menuTheme" :model="menuThemeItems" :popup="true" pt:start="mb-4 grid justify-center">
+          <template #start>
+            <Button type="button" @click="toggleDarkMode" size="small" rounded variant="outlined" 
+          :icon="iconSelect()" />
+          </template>
           <template #item="{ item }">
             <Avatar label="" :style="'background-color:'+ item.color" shape="circle" @click="changeTheme(item.label,item.preset)" />
           </template>
         </Menu>
-        <Button type="button" @click="toggleDarkMode" size="small" rounded variant="outlined" 
-          :icon="iconSelect()" />
         <Avatar class="menu-avatar" :label="initials()" shape="circle" @click="toggleUser"
           style="background-color: var(--p-primary-color); cursor: pointer;" />
         <Menu class="user-menu" ref="menuUser" id="overlay_menu" :model="menuUserItems" :popup="true" />
@@ -154,9 +156,22 @@ export default {
   min-width: 8em;
 }
 .p-menu.theme-menu {
-  min-width: 2.8em;
+  min-width: 3em;
+  align-items: center;
+  padding: 1em;
+}
+.theme-menu .p-menu-item {
   align-items: center;
   cursor: pointer;
+  padding: 2px;
+}
+
+.theme-menu .p-menu-item-content:hover {
+  background-color: transparent;
+}
+
+.theme-menu .p-menu-item-content:focus {
+  background-color: transparent;
 }
 
 .menu-avatar {
