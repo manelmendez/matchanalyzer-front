@@ -27,6 +27,12 @@ main {
   display: grid;
   grid-auto-flow: row;
   gap: 2em;
+  max-width: 100%;
+}
+
+main > * {
+  max-width: 100%; /* Hace que los hijos de main no crezcan más allá */
+  overflow-x: auto; /* Si hay contenido muy grande, le pone scroll */
 }
 
 .center-h {

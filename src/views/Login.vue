@@ -3,7 +3,7 @@
     <Card class="w-max" style="background-color: #ffffff70; backdrop-filter: blur(10px);">
       <template #title>Iniciar Sesión</template>
       <template #content>
-        <Form :initialValues :resolver @submit="onFormSubmit" class="w-100">
+        <Form :initialValues :resolver @submit="onFormSubmit" class="md:w-100">
           <div class="grid gap-4">
             <div class="w-full grid gap-4">
               <FormField v-slot="$field" name="email" initialValue="" :resolver="customEmailResolver">

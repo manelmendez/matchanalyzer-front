@@ -23,5 +23,8 @@ const displayMenu = computed(() => rootStore.displayMenu)
   padding: 6em 2em 2em 2em;
   font-weight: normal;
   gap: 2em;
+  width: 100%;
+  max-width: 100vw; /* Limita el ancho máximo a la ventana */
+  overflow-x: hidden; /* Evita que desborde horizontalmente */
 }
 </style>
