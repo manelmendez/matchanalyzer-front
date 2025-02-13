@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, reactive } from "vue";
 import constants from "@/assets/constants/constants";
 import { useUserStore, useCompetitionStore } from "@/stores/store";
 
@@ -46,15 +46,19 @@ export default {
   },
   setup(props, { emit }) {
     const show = props.show
+    const competition = props.competition ? props.competition : null
     const userStore = useUserStore()
     const competitionStore = useCompetitionStore()
 
     const user = computed(() => userStore.user)
 
-    const name = ref(null)
-    const season = ref(null)
-    const discipline = ref(null)
-    const category = ref(null)
+    const name = ref(competition ? competition.name : null)
+    const season = ref(competition ? competition.season : null)
+    const discipline = ref(competition ? competition.discipline : null)
+    const category = ref(competition ? competition.category : null)
+
+    const refs = {name:name, season:season, discipline:discipline, category:category}
+
 
     const seasonOptions = ref(constants.seasons)
     const disciplineOptions = ref(constants.disciplines)
@@ -75,23 +79,36 @@ export default {
 
     const submit = async(competitionSubmitted) => {
       competitionSubmitted.managerId = user.value.id
-      competitionStore.addCompetition(competitionSubmitted).then((response) => {
-        if (response.status === 200) {
-          emit('confirm')
+      if (competition) {
+        const data = {
+          id: competition.id,
+          body: competitionSubmitted
         }
-      })
+        competitionStore.updateCompetition(data).then((response) => {
+          if (response.status === 200) {
+            emit('confirm')
+          }
+        })
+      }
+      else {
+        competitionStore.addCompetition(competitionSubmitted).then((response) => {
+          if (response.status === 200) {
+            emit('confirm')
+          }
+        })
+      }
     }
     
     const close = () => {
       emit('close')
     }
 
-    const customNameResolver = ({ value }) => {
+    const customNameResolver = () => {
       const errors = { name: []};      
-      if (!value) {
+      if (!name.value) {
           errors.name.push({ type: 'required', message: 'Name is required.' });
       }
-      if (value?.length < 3) {
+      if (name.value?.length < 3) {
           errors.name.push({ type: 'minimum', message: 'Name must be at least 3 characters long.' });
       }
       return {
@@ -101,7 +118,7 @@ export default {
     
     const customSelectResolver = ({ name,value }) => {
       const errors = { [name]: [] };      
-      if (!value) {
+      if (!refs[name].value) {
         errors[name].push({ type: 'required', message: 'One selection is required.' });
       }
       return {

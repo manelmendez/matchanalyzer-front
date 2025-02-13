@@ -5,7 +5,7 @@
       <template #content>
         <div class="grid justify-center max-lg:text-sm">
           <Image :src="constants.ADDRESS + match.localTeam.avatar"
-          :error="match.localTeam.avatar = constants.DEFAULT_TEAM_URL" width="30"/>
+          @error="match.localTeam.avatar = constants.DEFAULT_TEAM_URL" width="30"/>
         </div>
         <p class="max-lg:text-xs">{{ match.localTeam.name }}</p>
       </template>
@@ -20,7 +20,7 @@
       <template #content>
         <div class="grid justify-center">
           <Image :src="constants.ADDRESS + match.awayTeam.avatar"
-            :error="match.awayTeam.avatar = constants.DEFAULT_TEAM_URL" width="30"/>
+            @error="match.awayTeam.avatar = constants.DEFAULT_TEAM_URL" width="30"/>
         </div>
         <p class="max-lg:text-xs">{{ match.awayTeam.name }}</p>
       </template>

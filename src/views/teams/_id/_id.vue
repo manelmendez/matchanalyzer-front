@@ -2,7 +2,7 @@
   <Card class="myteam-header">
     <template #content>
       <Tag style="border: 2px solid var(--p-primary-color); color: var(--text-color); ">
-            <Image :src="constants.ADDRESS + avatar" :error="avatar = constants.DEFAULT_TEAM_URL" width="25" style="margin-right: .5em;" />
+            <Image :src="constants.ADDRESS + avatar" @error="avatar = constants.DEFAULT_TEAM_URL" width="25" style="margin-right: .5em;" />
             <span>{{ myTeam?.name }}</span>
       </Tag>
       <Button label="Ir a la competición" icon="pi pi-chevron-right" iconPos="right" rounded

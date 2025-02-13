@@ -34,14 +34,12 @@ export const competitionActions = {
     console.log('ACTION -- updateCompetition')
     const competitionStore = useCompetitionStore()
     return axios
-      .put('competitions/' + data.id, data)
+      .put('competitions/' + data.id, data.body)
       .then((response) => {
-        let previousCompetition = competitionStore.competitions.find(
-              (a) => a.id === response.data.id
-            )
-            if (previousCompetition && response.data) {
-              Object.assign(previousCompetition, response.data)
-            }
+        let previousCompetition = competitionStore.competitions.find((a) => a.id === response.data.competition.id)
+        if (previousCompetition && response.data.competition) {
+          Object.assign(previousCompetition, response.data.competition)
+        }
         return response
       })
       .catch((err) => {

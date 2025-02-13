@@ -48,7 +48,7 @@
             </i>
             <div class="grid justify-center">
               <Image :src="constants.ADDRESS + team.avatar"
-              :error="team.avatar = constants.DEFAULT_TEAM_URL" width="90"/>
+              @error="team.avatar = constants.DEFAULT_TEAM_URL" width="90"/>
             </div>
             <div class="text-center">{{ team.name }}</div>
           </template>

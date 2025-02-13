@@ -11,7 +11,7 @@
           <Image
             width="20"
             :src="constants.ADDRESS + slotProps.data.avatar"
-            :error="slotProps.data.avatar = constants.DEFAULT_TEAM_URL"
+            @error="slotProps.data.avatar = constants.DEFAULT_TEAM_URL"
             style="cursor: pointer;"
             @click="router.push('/competitions/' + router.currentRoute.value.params.id + '/team/' + slotProps.data.id)"/>
         </div>

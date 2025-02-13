@@ -7,7 +7,7 @@
           <h3 class="title">Líder</h3>
             <Image
               :src="constants.ADDRESS + slotProps.data.teams[0].avatar"
-              :error="slotProps.data.teams[0].avatar = constants.DEFAULT_TEAM_URL"
+              @error="slotProps.data.teams[0].avatar = constants.DEFAULT_TEAM_URL"
               :width="35">
             </Image>
             <p>{{ slotProps.data.teams[0].name }}</p>
@@ -16,7 +16,7 @@
           <h3>Último</h3>
           <Image
             :src="constants.ADDRESS + slotProps.data.teams[slotProps.data.teams.length -1].avatar"
-            :error="slotProps.data.teams[slotProps.data.teams.length -1].avatar = constants.DEFAULT_TEAM_URL"
+            @error="slotProps.data.teams[slotProps.data.teams.length -1].avatar = constants.DEFAULT_TEAM_URL"
             :width="35">
           </Image>
           <p>{{ slotProps.data.teams[slotProps.data.teams.length -1].name }}</p>

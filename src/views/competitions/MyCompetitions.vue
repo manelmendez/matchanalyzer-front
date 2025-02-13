@@ -6,7 +6,7 @@
           <a v-ripple class="flex items-center">
             <span>{{ item.name }}</span>
             <div style="margin-left: auto;">
-              <Button icon="pi pi-pencil" severity="info" variant="text" rounded @click.stop="updatingCompetition = item.id,dialog = true"/>
+              <Button icon="pi pi-pencil" severity="info" variant="text" rounded @click.stop="updatingCompetition = item,dialog = true"/>
               <Button icon="pi pi-trash" severity="danger" variant="text" rounded @click.stop="deletingCompetition = item.id,deleteDialog = true"/>
             </div>
           </a>
@@ -19,7 +19,7 @@
   </div>
   <CreateOrEditCompetition
     v-if="dialog"
-    :team="updatingCompetition ? updatingCompetition : null"
+    :competition="updatingCompetition ? updatingCompetition : null"
     :show="dialog"
     @confirm="createOrUpdateCompetitionFunction"
     @close="dialog = false, updatingCompetition = null"

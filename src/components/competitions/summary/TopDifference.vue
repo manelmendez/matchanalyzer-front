@@ -14,7 +14,7 @@
                 <a v-ripple class="flex items-center">
                   <!-- <span :class="item.icon" /> -->
                   <Image style="margin-right: 1em;" :src="constants.ADDRESS + item.avatar"
-                  :error="item.avatar = constants.DEFAULT_TEAM_URL" width="30"/>
+                  @error="item.avatar = constants.DEFAULT_TEAM_URL" width="30"/>
                   <span>{{ item.name }}</span>
                   <div style="margin-left: auto;" class="grid grid-cols-2 gap-2 text-center">
                     <span>{{ item.stats.goalDif }}</span><i class="material-icons center-h">sports_soccer</i>
