@@ -80,6 +80,7 @@ export default {
         teamSubmitted.managerId = user.value.id
         teamSubmitted.avatar = imageResponse != null ? constants.IMAGES_URL+imageResponse.data.filename : null
         if (team) {
+          teamSubmitted.competitionId = team.competitionId
           const data = {
             id: team.id,
             body: {
