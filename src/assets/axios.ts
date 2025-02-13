@@ -9,7 +9,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.defaults.headers.common['Accept'] = 'application/json';
 axiosInstance.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
-axiosInstance.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencoded';
+axiosInstance.defaults.headers.common['Content-Type'] = 'application/json';
 
 // add token to Auth header if onceLogged
 const authUser = window.localStorage.getItem('authUser');

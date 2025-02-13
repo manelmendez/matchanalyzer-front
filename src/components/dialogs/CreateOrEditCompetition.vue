@@ -1,7 +1,7 @@
 <template>
-  <Dialog v-model:visible="show" modal header="Create Competition" :closable="false" :style="{ width: 'max-content' }">
+  <Dialog v-model:visible="show" modal header="Crear Competición" :closable="false" :style="{ width: 'max-content' }">
     <Form @submit="onFormSubmit" class="inputs">
-      <div class="forms">
+      <div class="grid md:grid-cols-2 justify-center gap-4">
         <FormField v-slot="$field" name="name" :resolver="customNameResolver">
           <InputText type="text" placeholder="Nombre del equipo" v-model="name"/>
           <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{ $field.error?.message }}</Message>

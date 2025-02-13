@@ -111,8 +111,6 @@ export default {
 
     onMounted(() => {
       setInitialTheme()
-      const p = palette('{emerald}')
-      console.log(p)
     })
 
     return {

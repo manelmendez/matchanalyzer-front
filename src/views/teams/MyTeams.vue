@@ -9,7 +9,7 @@
               :error="item.avatar = constants.DEFAULT_TEAM_URL" width="30"/>
             <span>{{ item.name }}</span>
             <div style="margin-left: auto;">
-              <Button icon="pi pi-pencil" severity="info" variant="text" rounded @click.stop="updatingTeam = item.id,dialog = true"/>
+              <Button icon="pi pi-pencil" severity="info" variant="text" rounded @click.stop="updatingTeam = item,dialog = true"/>
               <Button icon="pi pi-trash" severity="danger" variant="text" rounded @click.stop="deletingTeam = item.id,deleteDialog = true"/>
             </div>
           </a>

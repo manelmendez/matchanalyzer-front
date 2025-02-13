@@ -1,13 +1,13 @@
 <template>
-  <Dialog v-model:visible="show" modal header="Create Team" :closable="false" :style="{ width: 'max-content' }">
+  <Dialog v-model:visible="show" modal header="Crear Equipo" :closable="false" :style="{ width: 'max-content' }">
     <Form :initialValues @submit="onFormSubmit" class="inputs">
-      <div class="forms">
+      <div class="grid md:grid-cols-3 justify-center gap-4">
         <FileUpload ref="fileupload" mode="basic" name="demo[]" url="/images" accept="image/*" :maxFileSize="1000000"/>
-        <FormField v-slot="$field" name="name" initialValue="" :resolver="customNameResolver">
+        <FormField v-slot="$field" name="name" :resolver="customNameResolver">
           <InputText type="text" placeholder="Nombre del equipo" />
           <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{ $field.error?.message }}</Message>
         </FormField>
-        <FormField v-slot="$field" name="season" initialValue="" :resolver="customSelectSeasonResolver">
+        <FormField v-slot="$field" name="season" :resolver="customSelectSeasonResolver">
           <Select :options="seasonOptions" optionLabel="" placeholder="Elige una temporada" style="width: 100%;" />
           <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{ $field.error?.message }}</Message>
         </FormField>
@@ -44,6 +44,7 @@ export default {
   setup(props, { emit }) {
     const show = props.show
     const myTeam = props.myTeam
+    const team = props.team ? props.team : null
     const fileupload = ref();
     const userStore = useUserStore()
     const teamStore = useTeamStore()
@@ -51,8 +52,8 @@ export default {
     const user = computed(() => userStore.user)
     
     const initialValues = reactive({
-        name: '',
-        season: ''
+        name: team ? team.name : '',
+        season: team ? team.season : ''
     });
     const seasonOptions = ref(constants.seasons)
     
@@ -78,11 +79,26 @@ export default {
       if (myTeam) {
         teamSubmitted.managerId = user.value.id
         teamSubmitted.avatar = imageResponse != null ? constants.IMAGES_URL+imageResponse.data.filename : null
-        teamStore.addTeam(teamSubmitted).then((response) => {
-          if (response.status === 200) {
-            emit('confirm')
+        if (team) {
+          const data = {
+            id: team.id,
+            body: {
+              team: teamSubmitted
+            }
           }
-        })
+          teamStore.updateTeam(data).then((response) => {
+            if (response.status === 200) {
+              emit('confirm')
+            }
+          })
+        }
+        else {
+          teamStore.addTeam(teamSubmitted).then((response) => {
+            if (response.status === 200) {
+              emit('confirm')
+            }
+          })
+        }
       }
       else {
         teamStore.addNoManagerTeam(teamSubmitted).then((response) => {
@@ -149,12 +165,6 @@ export default {
 .inputs {
   display: grid;
   grid-auto-flow: row;
-  justify-content: center;
-  gap: 2em;
-}
-.forms {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
   justify-content: center;
   gap: 2em;
 }

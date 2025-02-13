@@ -79,10 +79,17 @@ export const teamActions = {
   },
   updateTeam(data:any) {
     console.log('ACTION -- updateTeam')
+    const teamStore = useTeamStore()
     const competitionStore = useCompetitionStore()
     return axios
       .put('teams/' + data.id, data.body)
       .then((response) => {
+        let previousMyTeam = teamStore.myTeams?.find((a) => a.id === response.data.team.id)
+        if (previousMyTeam) {
+          Object.assign(previousMyTeam, response.data.team)
+        } else {
+          teamStore.myTeams?.push(response.data.team)
+        }
         let previousTeam = competitionStore.competition.teams?.find((a) => a.id === response.data.team.id)
         if (previousTeam) {
           Object.assign(previousTeam, response.data.team)
