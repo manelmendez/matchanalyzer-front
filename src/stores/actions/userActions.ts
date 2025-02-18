@@ -15,7 +15,6 @@ export const userActions = {
   signIn(credentials: any) {
     const userStore = useUserStore()
     console.log('ACTION -- signIn')
-    console.log(credentials)
     return axios
       .post('users/signin', {}, { auth: credentials })
       .then((response) => {
