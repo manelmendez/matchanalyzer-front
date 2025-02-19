@@ -9,20 +9,33 @@ jobs:
   deployment:
     runs-on: ubuntu-latest
     steps:
-      # - name: Traer el codigo
-      #   uses: actions/checkout@v4
-      # - name: Setup Node
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: 22
+      - name: Traer el codigo
+        uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to GitHub Container Registry
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build the Docker image
+        run: |
+          docker buildx build --platform linux/arm64 --build-arg environment=raspy -t ghcr.io/${{ github.repository }}/matchanalyzer-front:latest --progress=plain --push .
+
+      - name: Verify Docker login
+        run: docker info
+
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
       - name: Deploy primevue client to raspy
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd /home/ubuntu/workspace/matchanalyzer-front || exit
             git pull origin main
+            docker-compose -f docker-compose-raspy.yml pull matchanalyzer-front  # Esto descargará la imagen desde GHCR
             docker-compose -f docker-compose-raspy.yml up -d --build
           EOF

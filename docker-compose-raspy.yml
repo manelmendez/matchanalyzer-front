@@ -2,11 +2,7 @@ version: '3.8'
 
 services:
   matchanalyzer-front:
-    build: 
-      context: .
-      dockerfile: Dockerfile
-      args:
-        environment: "raspy"
+    image: ghcr.io/manelmendez/matchanalyzer-front/matchanalyzer-front:latest
     container_name: "matchanalyzer-front"
     restart: always
     stdin_open: true
