@@ -20,63 +20,63 @@ const router = createRouter({
       path: '/',
       component: AppLayout,
       children: [
-          {
-              path: '/',
-              name: 'dashboard',
-              component: () => import('@/views/HomeView.vue'),
-              meta: { requiresAuth: true }
-          },
-          {
-            path: '/teams',
-            name: 'teams',
-            component: () => import('@/views/teams/MyTeams.vue'),
-            meta: { requiresAuth: true },
-          },
-          {
-            path: '/teams/:id',
-            name: 'teams-id',
-            component: () => import('@/views/teams/_id/_id.vue'),
-            meta: { requiresAuth: true }
-          },
-          {
-            path: '/competitions',
-            name: 'competitions',
-            component: () => import('@/views/competitions/MyCompetitions.vue'),
-            meta: { requiresAuth: true }
-          },
-          {
-            path: '/competitions/:id/round/:roundId/',
-            name: 'competitions-id',
-            component: () => import('@/views/competitions/_id/index.vue'),
-            meta: { requiresAuth: true },
-            children: [
-              {
-                path: 'summary',
-                name: 'summary',
-                component: () => import('@/views/competitions/_id/Summary.vue'),
-                meta: { requiresAuth: true, layout: 'default' }
-              },
-              {
-                path: 'results',
-                name: 'results',
-                component: () => import('@/views/competitions/_id/Results.vue'),
-                meta: { requiresAuth: true, layout: 'default' }
-              },
-              {
-                path: 'rankings',
-                name: 'rankings',
-                component: () => import('@/views/competitions/_id/Classification.vue'),
-                meta: { requiresAuth: true, layout: 'default' }
-              }
-            ]
-          },
-          // {
-          //   path: '/teams',
-          //   name: 'teams',
-          //   component: () => import('@/views/Teams.vue'),
-          //   meta: { requiresAuth: true }
-          // },
-        ]
+        {
+          path: '/',
+          name: 'dashboard',
+          component: () => import('@/views/HomeView.vue'),
+          meta: { requiresAuth: true }
+        },
+        {
+          path: '/teams',
+          name: 'teams',
+          component: () => import('@/views/teams/MyTeams.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
+          path: '/teams/:id',
+          name: 'teams-id',
+          component: () => import('@/views/teams/_id/_id.vue'),
+          meta: { requiresAuth: true }
+        },
+        {
+          path: '/competitions',
+          name: 'competitions',
+          component: () => import('@/views/competitions/MyCompetitions.vue'),
+          meta: { requiresAuth: true }
+        },
+        {
+          path: '/competitions/:id/round/:roundId/',
+          name: 'competitions-id',
+          component: () => import('@/views/competitions/_id/index.vue'),
+          meta: { requiresAuth: true },
+          children: [
+            {
+              path: 'summary',
+              name: 'summary',
+              component: () => import('@/views/competitions/_id/Summary.vue'),
+              meta: { requiresAuth: true, layout: 'default' }
+            },
+            {
+              path: 'results',
+              name: 'results',
+              component: () => import('@/views/competitions/_id/Results.vue'),
+              meta: { requiresAuth: true, layout: 'default' }
+            },
+            {
+              path: 'rankings',
+              name: 'rankings',
+              component: () => import('@/views/competitions/_id/Classification.vue'),
+              meta: { requiresAuth: true, layout: 'default' }
+            }
+          ],
+        },
+        {
+          path: '/planification',
+          name: 'planification',
+          component: () => import('@/views/Planification.vue'),
+          meta: { requiresAuth: true }
+        },
+      ]
     }
   ],
 })

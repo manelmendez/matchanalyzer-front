@@ -23,7 +23,7 @@ body {
 }
 
 main {
-  height: fit-content;
+  min-height: 100%;
   display: grid;
   grid-auto-flow: row;
   gap: 2em;
