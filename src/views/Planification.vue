@@ -1,6 +1,6 @@
 <template>
   <div v-if="events">
-    <ScheduleXCalendar :calendar-app="calendarApp" />
+    <ScheduleXCalendar class="planification-calendar" :calendar-app="calendarApp" />
   </div>
 </template>
 <script lang="ts">
@@ -13,6 +13,7 @@ import {
   createViewMonthGrid,
   createViewWeek
 } from '@schedule-x/calendar'
+import { createDragAndDropPlugin } from '@schedule-x/drag-and-drop'
 import '@schedule-x/theme-default/dist/index.css'
 import { useCalendarStore } from '@/stores/store'
 import { CalendarEvent } from '@/models/calendarEvent'
@@ -40,7 +41,24 @@ export default {
         end: '22:00',
       },
       defaultView: createViewMonthGrid.name,
-    })
+      callbacks: {
+        /**
+         * Is called when an event is updated through drag and drop
+         * */
+        async onEventUpdate(updatedEvent) {
+          console.log('onEventUpdate', updatedEvent)
+          let body = {
+            id: updatedEvent.id,
+            title: updatedEvent.title,
+            description: updatedEvent.description,
+            start: updatedEvent.start,
+            end: updatedEvent.end,
+            location: updatedEvent.location,
+          }
+          await calendarStore.updateEvent(body)
+        },
+      }
+    }, [createDragAndDropPlugin()])
 
     const getInitialData = async () => {
       await calendarStore.getUserEvents()
@@ -68,8 +86,11 @@ export default {
 }
 </script>
 
-<style scoped>
-.sx-vue-calendar-wrapper {
+<style>
+.planification-calendar .sx-vue-calendar-wrapper {
   height: 100%;
+}
+.planification-calendar .sx__event {
+  cursor: pointer;
 }
 </style>

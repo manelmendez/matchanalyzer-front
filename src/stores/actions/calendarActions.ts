@@ -1,13 +1,11 @@
 import axios from '@/assets/axios'
 import { useCalendarStore } from '../modules/calendar'
-import { CalendarEvent } from '@/models/calendarEvent'
 
 export const calendarActions = {
   getUserEvents() {
     const calendarStore = useCalendarStore()
     console.log('ACTION -- getUserEvents')
     return axios.get('calendar').then((response) => {
-      console.log(response.data.events)
       calendarStore.events = response.data.events
     })
   },
@@ -32,7 +30,22 @@ export const calendarActions = {
   //       return response
   //     })
   // },
-
+  async updateEvent(body: any) {
+    try {
+      const calendarStore = useCalendarStore()
+      console.log('ACTION -- updateEvent')
+      let response = await axios.put('calendar/' + body.id, body)
+      console.log(response.data.event)
+      let previousEvent = calendarStore.events?.find((a) => a.id === response.data.event.id)
+        if (previousEvent) {
+          Object.assign(previousEvent, response.data.event)
+        } else {
+          calendarStore.events?.push(response.data.event)
+        }
+    } catch (error) {
+      console.log(error)
+    }
+  },
   // deleteEvent(data: any) {
   //   const userStore = useCalendarStore()
   //   console.log('ACTION -- signUp')
