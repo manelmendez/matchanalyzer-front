@@ -1,25 +1,41 @@
 <template>
-  <Carousel :value="competitions" :numVisible="1" :numScroll="1" circular :autoplayInterval="6000">
+  <Carousel
+    :value="competitions"
+    :numVisible="1"
+    :numScroll="1"
+    circular
+    :autoplayInterval="6000"
+  >
     <template #item="slotProps">
-      <div class="center-h">{{slotProps.data.name}}</div>
+      <div class="center-h">{{ slotProps.data.name }}</div>
       <div class="carousel-content">
         <div class="carousel-item">
           <h3 class="title">Líder</h3>
-            <Image
-              :src="constants.ADDRESS + slotProps.data.teams[0].avatar"
-              @error="slotProps.data.teams[0].avatar = constants.DEFAULT_TEAM_URL"
-              :width="35">
-            </Image>
-            <p>{{ slotProps.data.teams[0].name }}</p>
+          <Image
+            :src="constants.ADDRESS + slotProps.data.teams[0].avatar"
+            @error="slotProps.data.teams[0].avatar = constants.DEFAULT_TEAM_URL"
+            :width="35"
+          >
+          </Image>
+          <p>{{ slotProps.data.teams[0].name }}</p>
         </div>
         <div class="carousel-item">
           <h3>Último</h3>
           <Image
-            :src="constants.ADDRESS + slotProps.data.teams[slotProps.data.teams.length -1].avatar"
-            @error="slotProps.data.teams[slotProps.data.teams.length -1].avatar = constants.DEFAULT_TEAM_URL"
-            :width="35">
+            :src="
+              constants.ADDRESS +
+              slotProps.data.teams[slotProps.data.teams.length - 1].avatar
+            "
+            @error="
+              slotProps.data.teams[slotProps.data.teams.length - 1].avatar =
+                constants.DEFAULT_TEAM_URL
+            "
+            :width="35"
+          >
           </Image>
-          <p>{{ slotProps.data.teams[slotProps.data.teams.length -1].name }}</p>
+          <p>
+            {{ slotProps.data.teams[slotProps.data.teams.length - 1].name }}
+          </p>
         </div>
         <div class="carousel-item">
           <h3>Total Goles</h3>
@@ -38,46 +54,46 @@
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useUserStore, useCompetitionStore } from '@/stores/store.ts'
-import constants from '@/assets/constants/constants.ts'
+import { computed } from "vue";
+import { useUserStore, useCompetitionStore } from "@/stores/store.ts";
+import constants from "@/assets/constants/constants.ts";
 export default {
-  name: 'CompetitionCarousel',
-  props: {
-  },
+  name: "CompetitionCarousel",
+  props: {},
   setup() {
-    const userStore = useUserStore()
-    const competitionStore = useCompetitionStore()
+    const userStore = useUserStore();
+    const competitionStore = useCompetitionStore();
 
-    const user = computed(() => userStore.user)
-    const competitions = computed(() => competitionStore.competitions)
+    const user = computed(() => userStore.user);
+    const competitions = computed(() => competitionStore.competitions);
 
     const getInitialData = async () => {
-      await competitionStore.getUserCompetitions(Number(user.value.id))
-    }
+      await competitionStore.getUserCompetitions(Number(user.value.id));
+    };
 
-    const totalGoals = ((competition) => {
-      let goals = 0
+    const totalGoals = (competition) => {
+      let goals = 0;
       for (let i = 0; i < competition.teams.length; i++) {
-        goals += competition.teams[i].stats.goals
+        goals += competition.teams[i].stats.goals;
       }
-      return goals
-    })
+      return goals;
+    };
 
     return {
       user,
       competitions,
       getInitialData,
       constants,
-      totalGoals
-    }
-  }
-}
+      totalGoals,
+    };
+  },
+};
 </script>
 <style>
 .carousel-content {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  min-height: 10em;
 }
 
 @media (max-width: 1280px) {

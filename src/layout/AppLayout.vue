@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import AppToolbar from '@/layout/AppToolbar.vue'
-import AppSidebar from '@/layout/AppSidebar.vue'
+import AppToolbar from "@/layout/AppToolbar.vue";
+import AppSidebar from "@/layout/AppSidebar.vue";
 import { computed } from "vue";
 import { useRootStore } from "@/stores/store";
-const rootStore = useRootStore()
-const displayMenu = computed(() => rootStore.displayMenu)
+const rootStore = useRootStore();
+const displayMenu = computed(() => rootStore.displayMenu);
 </script>
 
 <template>
-  <div class="app-layout grid grid-cols-[14em_1fr] max-sm:grid-cols-1" :style="displayMenu ? '' : 'grid-template-columns: 1fr'">
+  <div
+    class="app-layout grid grid-cols-[14em_1fr] max-sm:grid-cols-1"
+    :style="displayMenu ? '' : 'grid-template-columns: 1fr'"
+  >
     <AppToolbar />
     <AppSidebar />
     <main>
