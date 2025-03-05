@@ -1,14 +1,13 @@
-import { defineStore } from 'pinia'
-import { userActions } from '../actions/userActions'
-import { IUser } from '../../models/user'
-export const useUserStore = defineStore('user', {
+import { defineStore } from "pinia";
+import { userActions } from "../actions/userActions";
+import { IUser } from "../../models/user";
+export const useUserStore = defineStore("user", {
   state: () => ({
     user: {} as IUser,
-    isLogged: false
+    isLogged: false,
   }),
   actions: {
     ...userActions,
   },
-  getters: {
-  }
-})
+  getters: {},
+});
