@@ -100,7 +100,7 @@ export default {
       {
         label: "Perfil",
         command: () => {
-          /* handle profile click */
+          router.push("/profile");
         },
       },
       {
