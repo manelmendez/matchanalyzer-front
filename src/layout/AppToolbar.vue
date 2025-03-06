@@ -73,7 +73,7 @@ import { ref, computed } from "vue";
 import { useUserStore, useRootStore } from "@/stores/store";
 import { IUser } from "@/models/user";
 import { useRouter } from "vue-router";
-import { usePreset, palette } from "@primevue/themes";
+import { usePreset } from "@primevue/themes";
 import {
   Emerald,
   Indigo,
