@@ -1,7 +1,7 @@
 <template>
   <div class="grid justify-items-center w-full h-full gap-8">
     <Avatar
-      class="h-40 w-40 text-6xl"
+      class="h-35 w-35 text-6xl"
       :label="initials()"
       shape="circle"
       style="background-color: var(--p-primary-color)"
@@ -76,7 +76,7 @@
           </div>
           <div class="grid grid-cols py-2" v-if="!editing">
             <p class="text-md !font-bold">Fecha de registro:</p>
-            <p>{{ user.signupDate }}</p>
+            <p>{{ signupDate }}</p>
           </div>
           <div class="flex gap-4 mt-4" v-if="editing">
             <Button label="Cancel" severity="secondary" outlined class="w-full" @click="editing = false" />
@@ -92,6 +92,7 @@
 import { IUser } from '@/models/user'
 import { useUserStore } from '@/stores/store'
 import { computed, ref } from 'vue'
+import moment from 'moment-timezone'
 
 export default {
   name: 'Profile',
@@ -99,6 +100,8 @@ export default {
     const editing = ref(false)
     const userStore = useUserStore()
     const user = computed<IUser>(() => userStore.user)
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    const signupDate = computed(() => moment(user.value.signupDate).tz(timezone).format('YYYY-MM-DD HH:mm'))
     const firstname = ref(user.value.firstname)
     const lastname = ref(user.value.lastname)
     const email = ref(user.value.email)
@@ -168,6 +171,7 @@ export default {
       firstname,
       lastname,
       email,
+      signupDate,
       initials,
       editing,
       customNameResolver,

@@ -20,6 +20,7 @@
     "@schedule-x/vue": "^2.18.0",
     "axios": "^1.7.9",
     "chart.js": "^4.4.7",
+    "moment-timezone": "^0.5.47",
     "pinia": "^2.3.0",
     "primeicons": "^7.0.0",
     "primevue": "^4.2.5",
