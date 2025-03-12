@@ -11,10 +11,10 @@
         <span>{{ teamWithStats?.name }}</span>
       </Tag>
     </div>
-    <div class="grid grid-cols-3 gap-8">
-      <Card> </Card>
-      <Card> </Card>
-      <Card> </Card>
+    <div class="grid grid-cols-3 gap-8 min-md:grid-cols-2">
+      <positionStats :statsPerRound="statsPerRound" />
+      <matchStats :rankedTeams="rankedTeams" />
+      <goalStats :rounds="rounds" />
     </div>
     <div class="grid grid-cols-3 gap-8">
       <Card>
@@ -58,10 +58,16 @@ import constants from '@/assets/constants/constants'
 import router from '@/router/index.js'
 import { IUser } from '@/models/user'
 import teamMatchList from '@/components/competitions/team/teamMatchList.vue'
+import positionStats from '@/components/competitions/team/positionStats.vue'
+import matchStats from '@/components/competitions/team/matchStats.vue'
+import goalStats from '@/components/competitions/team/goalStats.vue'
 
 export default {
   components: {
-    teamMatchList
+    teamMatchList,
+    positionStats,
+    matchStats,
+    goalStats
   },
   setup() {
     const userStore = useUserStore()
@@ -70,6 +76,8 @@ export default {
     const competitionStore = useCompetitionStore()
     const team = computed<ITeam | undefined>(() => teamStore.teamById(Number(router.currentRoute.value.params.teamId)))
     const rounds = computed(() => competitionStore.rounds)
+    const statsPerRound = computed(() => competitionStore.statsPerRound)
+    const rankedTeams = computed(() => competitionStore.rankedTeams('latest'))
     const teamWithStats = computed<ITeam | undefined>(() =>
       competitionStore.competitionTeamById(
         Number(router.currentRoute.value.params.id),
@@ -128,6 +136,7 @@ export default {
     const getInitialData = async () => {
       await teamStore.getUserTeams(Number(user.value.id))
       await competitionStore.getUserCompetitions(Number(user.value.id))
+      await competitionStore.getCompetition(Number(router.currentRoute.value.params.id))
       await competitionStore.getCompetitionRounds(Number(router.currentRoute.value.params.id))
     }
 
@@ -141,7 +150,9 @@ export default {
       constants,
       totalStats,
       teamWithStats,
-      router
+      router,
+      statsPerRound,
+      rankedTeams
     }
   }
 }
