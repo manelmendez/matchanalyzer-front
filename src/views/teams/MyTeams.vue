@@ -2,21 +2,37 @@
   <div>
     <Menu :model="myTeams" class="teams-menu">
       <template #item="{ item }">
-        <div class="item" @click="router.push({name: 'teams-id', params: {id: item.id}})">
+        <div class="item" @click="router.push({ name: 'teams-id', params: { id: item.id } })">
           <a v-ripple class="flex items-center">
             <!-- <span :class="item.icon" /> -->
-            <Image style="margin-right: 1em;" :src="constants.ADDRESS + item.avatar"
-              @error="item.avatar = constants.DEFAULT_TEAM_URL" width="30"/>
+            <Image
+              style="margin-right: 1em"
+              :src="constants.ADDRESS + item.avatar"
+              @error="item.avatar = constants.DEFAULT_TEAM_URL"
+              width="30"
+            />
             <span>{{ item.name }}</span>
-            <div style="margin-left: auto;">
-              <Button icon="pi pi-pencil" severity="info" variant="text" rounded @click.stop="updatingTeam = item,dialog = true"/>
-              <Button icon="pi pi-trash" severity="danger" variant="text" rounded @click.stop="deletingTeam = item.id,deleteDialog = true"/>
+            <div style="margin-left: auto">
+              <Button
+                icon="pi pi-pencil"
+                severity="info"
+                variant="text"
+                rounded
+                @click.stop=";(updatingTeam = item), (dialog = true)"
+              />
+              <Button
+                icon="pi pi-trash"
+                severity="danger"
+                variant="text"
+                rounded
+                @click.stop=";(deletingTeam = item.id), (deleteDialog = true)"
+              />
             </div>
           </a>
         </div>
       </template>
     </Menu>
-    <div class="center-h" style="margin-top: 2em;">
+    <div class="center-h" style="margin-top: 2em">
       <Button icon="pi pi-plus" rounded @click="dialog = true" />
     </div>
   </div>
@@ -26,24 +42,26 @@
     :team="updatingTeam ? updatingTeam : null"
     :show="dialog"
     @confirm="createOrUpdateTeamFunction"
-    @close="dialog = false, updatingTeam = null"
+    @close=";(dialog = false), (updatingTeam = null)"
   ></CreateOrEditTeam>
-  <DeleteDialog v-if="deleteDialog"
+  <DeleteDialog
+    v-if="deleteDialog"
     :show="deleteDialog"
     type="team"
-    @close="deleteDialog = false, deletingTeam = null"
-    @delete="deleteTeamFunction">
-  </DeleteDialog> 
+    @close=";(deleteDialog = false), (deletingTeam = null)"
+    @delete="deleteTeamFunction"
+  >
+  </DeleteDialog>
 </template>
 
 <script lang="ts">
-import { useTeamStore, useUserStore } from '@/stores/store';
-import { useRouter } from 'vue-router';
-import { computed, ComputedRef, ref } from 'vue';
-import { ITeam } from '@/models/team';
-import { onMounted } from 'vue';
-import constants from '@/assets/constants/constants';
-import DeleteDialog from '@/components/dialogs/DeleteDialog.vue';
+import { useTeamStore, useUserStore } from '@/stores/store'
+import { useRouter } from 'vue-router'
+import { computed, ComputedRef, ref } from 'vue'
+import { ITeam } from '@/models/team'
+import { onMounted } from 'vue'
+import constants from '@/assets/constants/constants'
+import DeleteDialog from '@/components/dialogs/DeleteDialog.vue'
 
 export default {
   setup() {
@@ -54,7 +72,7 @@ export default {
     const router = useRouter()
     const userStore = useUserStore()
     const teamStore = useTeamStore()
-    
+
     const user = computed(() => userStore.user)
     const myTeams: ComputedRef<ITeam[]> = computed(() => teamStore.myTeams)
 
@@ -63,7 +81,8 @@ export default {
     }
 
     const deleteTeamFunction = () => {
-      teamStore.deleteTeam(Number(deletingTeam.value))
+      teamStore
+        .deleteTeam(Number(deletingTeam.value))
         .then(() => {
           deleteDialog.value = false
         })
@@ -100,7 +119,7 @@ export default {
   z-index: 997;
   border: none;
   overflow-y: auto;
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
   border-radius: 0.75em;
   height: fit-content;
 }
@@ -112,7 +131,7 @@ export default {
   outline: 0 none;
   color: var(--text-color);
   cursor: pointer;
-  padding: .75rem 1rem;
+  padding: 0.75rem 1rem;
   border-radius: var(--content-border-radius);
   transition: background-color var(--element-transition-duration), box-shadow var(--element-transition-duration);
 }
