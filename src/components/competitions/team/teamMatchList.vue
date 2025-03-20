@@ -2,7 +2,7 @@
   <div v-if="loading" class="grid">
     <ProgressSpinner class="mx-auto" />
   </div>
-  <DataTable v-else :value="matchList" tableStyle="min-width: 50rem">
+  <DataTable v-else :value="matchList" tableStyle="grid sm:grid-cols-2 md:grid-cols-4">
     <Column field="roundName" style="width: 15%"></Column>
     <Column style="width: 60%">
       <template #body="item">
