@@ -100,10 +100,10 @@ export default {
 .rival {
   cursor: pointer;
   text-decoration: none;
+  color: var(--p-primary-color) !important;
 }
 .team {
   cursor: pointer;
   text-decoration: none;
-  color: var(--v-primary-) !important;
 }
 </style>

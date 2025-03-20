@@ -11,12 +11,12 @@
         <span>{{ teamWithStats?.name }}</span>
       </Tag>
     </div>
-    <div class="grid grid-cols-3 gap-8 min-md:grid-cols-2">
+    <div class="grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
       <positionStats :statsPerRound="statsPerRound" />
       <matchStats :rankedTeams="rankedTeams" />
       <goalStats :rounds="rounds" />
     </div>
-    <div class="grid grid-cols-3 gap-8">
+    <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       <Card>
         <template #title> Total </template>
         <template #content>
@@ -42,12 +42,18 @@
         </template>
       </Card>
     </div>
-    <Card v-if="teamWithStats && rounds">
-      <template #title> Jornadas disputadas </template>
-      <template #content>
-        <teamMatchList :team="teamWithStats" :rounds="rounds" :key="Number(router.currentRoute.value.params.teamId)" />
-      </template>
-    </Card>
+    <div class="grid grid-cols-1">
+      <Card v-if="teamWithStats && rounds">
+        <template #title> Jornadas disputadas </template>
+        <template #content>
+          <teamMatchList
+            :team="teamWithStats"
+            :rounds="rounds"
+            :key="Number(router.currentRoute.value.params.teamId)"
+          />
+        </template>
+      </Card>
+    </div>
   </div>
 </template>
 <script lang="ts">
